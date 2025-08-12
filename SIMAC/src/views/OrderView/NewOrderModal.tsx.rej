@@ -1,0 +1,281 @@
+diff a/SIMAC/src/views/OrderView/NewOrderModal.tsx b/SIMAC/src/views/OrderView/NewOrderModal.tsx	(rejected hunks)
+@@ -1,8 +1,8 @@
+-import React, { useState } from 'react';
++import React, { useState, useEffect } from 'react';
+ import { useNavigate } from 'react-router-dom';
+ import styles from '../../styles/Modal.module.css';
+-import { useEffect } from 'react';
+ import axios from 'axios';
++import { CustomSelect } from '../../components/CustomSelect';
+ 
+ 
+ type NewOrderData = {
+@@ -24,47 +29,118 @@ type Props = {
+ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
+     const navigate = useNavigate();
+ 
+-    const [form, setForm] = useState<NewOrderData>({
++    const [formData, setFormData] = useState<NewOrderData>({
+         tecnico: '',
+         fechaEntrega: '',
+         equipo: '',
+-        claseMantenimiento: 'Correctivo',
+-        tipoMantenimiento: 'Mecánico',
++        claseMantenimiento: '',
++        tipoMantenimiento: '',
+         prioridad: 'Media',
+         trabajoSolicitado: '',
+     });
+ 
+-    const [tecnicos, setTecnicos] = useState<string[]>([]);
+-    const [equipos, setEquipos] = useState<{ code_equip: string; name_equip: string }[]>([]);
++    const [tecnicoOptions, setTecnicoOptions] = useState<Option[]>([]);
++    const [equipoOptions, setEquipoOptions] = useState<Option[]>([]);
++    const [claseOptions, setClaseOptions] = useState<Option[]>([]);
++    const [tipoOptions, setTipoOptions] = useState<Option[]>([]);
++    const [prioridadOptions] = useState<Option[]>([
++        { value: 'Baja', label: 'Baja' },
++        { value: 'Media', label: 'Media' },
++        { value: 'Alta', label: 'Alta' },
++    ]);
++
++    const [errors, setErrors] = useState({
++        tecnico: false,
++        equipo: false,
++        trabajoSolicitado: false,
++        fechaEntrega: false,
++        claseMantenimiento: false,
++        tipoMantenimiento: false,
++    });
+ 
+-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+-        const { name, value } = e.target;
+-        setForm(f => ({ ...f, [name]: value }));
++    const validate = () => {
++        const today = new Date().toISOString().slice(0, 10);
++        const fechaEntregaValida = formData.fechaEntrega === '' || formData.fechaEntrega >= today;
++
++        const newErrors = {
++            tecnico: formData.tecnico.trim() === '',
++            equipo: formData.equipo.trim() === '',
++            claseMantenimiento: formData.claseMantenimiento.trim() === '',
++            tipoMantenimiento: formData.tipoMantenimiento.trim() === '',
++            trabajoSolicitado: formData.trabajoSolicitado.trim() === '',
++            fechaEntrega: !fechaEntregaValida,
++        };
++        setErrors(newErrors);
++        return !Object.values(newErrors).some(Boolean);
+     };
+ 
+-    const handleConfirm = () => {
+-        onConfirm(form);
+-        navigate('/order/received', { state: form });
+-        onClose();
++    const handleSubmit = async (e: React.FormEvent) => {
++        e.preventDefault();
++        if (!validate()) return;
++
++        const payload = {
++            id_user: "1",
++            id_tech: formData.tecnico,
++            date_delivery: formData.fechaEntrega || null,
++            id_equip: parseInt(formData.equipo),
++            id_class: parseInt(formData.claseMantenimiento),
++            id_type: parseInt(formData.tipoMantenimiento),
++            priority: formData.prioridad,
++            work_requested: formData.trabajoSolicitado,
++        };
++
++        try {
++            const response = await axios.post('http://localhost:3002/workOrders/post', payload);
++            console.log('Respuesta del servidor:', response.data);
++
++            await axios.put(`http://localhost:3002/equipment/updateService/${formData.equipo}`, { id_service: 2 });
++
++            onConfirm(formData);
++            onClose();
++            navigate('/order/received');
++        } catch (error) {
++            console.error('Error al guardar el orden de trabajo:', error);
++        }
+     };
+ 
+     useEffect(() => {
+-    if (isOpen) {
+-        axios.get('http://localhost:3002/technician/')
+-            .then(res => {
+-                // Suponiendo que el backend retorna un array de objetos con "name_tech"
+-                const nombres = res.data.data.map((t: any) => t.name_tech);
+-                setTecnicos(nombres);
+-            })
+-            .catch(err => console.error('Error al cargar técnicos:', err));
+-
+-        axios.get('http://localhost:3002/equipment/')
+-            .then(res => {
+-                
+-                setEquipos(res.data.data);
+-            })
+-            .catch(err => console.error('Error al cargar equipos:', err));
+-    }
++        if (isOpen) {
++            axios.get('http://localhost:3002/technician/')
++                .then(res => setTecnicoOptions(
++                    res.data.data.map((t: any) => ({
++                        value: t.id_tech,
++                        label: `${t.name_tech} (${t.id_tech})`
++                    }))
++                ))
++                .catch(err => console.error('Error al cargar técnicos:', err));
++
++            axios.get('http://localhost:3002/equipment/')
++                .then(res => setEquipoOptions(
++                    res.data.data.map((e: any) => ({
++                        value: String(e.id_equip),
++                        label: `${e.code_equip} ${e.name_equip}`
++                    }))
++                ))
++                .catch(err => console.error('Error al cargar equipos:', err));
++
++            axios.get('http://localhost:3002/classMaintenance/')
++                .then(res => setClaseOptions(
++                    res.data.data.map((c: any) => ({
++                        value: String(c.id_class),
++                        label: c.name_class
++                    }))
++                ))
++                .catch(err => console.error('Error al cargar clases de mantenimiento:', err));
++
++            axios.get('http://localhost:3002/typeMaintenance/')
++                .then(res => setTipoOptions(
++                    res.data.data.map((t: any) => ({
++                        value: String(t.id_type),
++                        label: t.name_type
++                    }))
++                ))
++                .catch(err => console.error('Error al cargar tipos de mantenimiento:', err));
++        }
+     }, [isOpen]);
+ 
+     if (!isOpen) return null;
+@@ -72,59 +148,74 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
+     return (
+         <div className={styles.overlay}>
+             <div className={styles.modal}>
+-                <h2>Nueva Orden de Trabajo</h2>
+-                <div className={styles.form}>
+-                    <label>Técnico</label>
+-                    <select name="tecnico" value={form.tecnico} onChange={handleChange}>
+-                        <option value="">Seleccione un técnico</option>
+-                        {tecnicos.map((t, i) => (
+-                            <option key={i} value={t}>{t}</option>
+-                        ))}
+-                    </select>
++                <h2 className={styles.title}>Nueva Orden de Trabajo</h2>
++                <form className={styles.form} onSubmit={handleSubmit}>
++                    <label>Técnico<span>*</span></label>
++                    <CustomSelect
++                        options={tecnicoOptions}
++                        value={tecnicoOptions.find(opt => opt.value === formData.tecnico) || null}
++                        onChange={opt => setFormData(prev => ({ ...prev, tecnico: opt?.value || '' }))}
++                        placeholder="Seleccione un técnico"
++                    />
++                    {errors.tecnico && <p className={styles.error}>Este campo es obligatorio</p>}
++
+                     <label>Fecha de Entrega</label>
+-                    <input type="date" name="fechaEntrega" value={form.fechaEntrega} onChange={handleChange} />
+-
+-                    <label>Equipo</label>
+-                    <select name="equipo" value={form.equipo} onChange={handleChange}>
+-                        <option value="">Seleccione un equipo</option>
+-                        {equipos.map((e, i) => (
+-                            <option key={i} value={e.code_equip}>
+-                                {e.code_equip} {e.name_equip}
+-                            </option>
+-                        ))}
+-                    </select>
+-
+-
+-                    <label>Clase de Mantenimiento</label>
+-                    <select name="claseMantenimiento" value={form.claseMantenimiento} onChange={handleChange}>
+-                        <option value="Correctivo">Correctivo</option>
+-                        <option value="Predictivo">Predictivo</option>
+-                        <option value="Preventivo">Preventivo</option>
+-                        <option value="Mejoramiento">Mejoramiento</option>
+-                    </select>
+-
+-                    <label>Tipo de Mantenimiento</label>
+-                    <select name="tipoMantenimiento" value={form.tipoMantenimiento} onChange={handleChange}>
+-                        <option value="Mecánico">Mecánico</option>
+-                        <option value="Eléctrico">Eléctrico</option>
+-                        <option value="Electrónico">Electrónico</option>
+-                    </select>
++                    <input
++                        type="date"
++                        name="fechaEntrega"
++                        value={formData.fechaEntrega}
++                        onChange={e => setFormData(prev => ({ ...prev, fechaEntrega: e.target.value }))}
++                    />
++                    {errors.fechaEntrega && <p className={styles.error}>No puede ser una fecha pasada</p>}
++
++                    <label>Equipo<span>*</span></label>
++                    <CustomSelect
++                        options={equipoOptions}
++                        value={equipoOptions.find(opt => opt.value === formData.equipo) || null}
++                        onChange={opt => setFormData(prev => ({ ...prev, equipo: opt?.value || '' }))}
++                        placeholder="Seleccione un equipo"
++                    />
++                    {errors.equipo && <p className={styles.error}>Este campo es obligatorio</p>}
++
++                    <label>Clase de Mantenimiento<span>*</span></label>
++                    <CustomSelect
++                        options={claseOptions}
++                        value={claseOptions.find(opt => opt.value === formData.claseMantenimiento) || null}
++                        onChange={opt => setFormData(prev => ({ ...prev, claseMantenimiento: opt?.value || '' }))}
++                        placeholder="Seleccione una clase"
++                    />
++                    {errors.claseMantenimiento && <p className={styles.error}>Este campo es obligatorio</p>}
++
++                    <label>Tipo de Mantenimiento<span>*</span></label>
++                    <CustomSelect
++                        options={tipoOptions}
++                        value={tipoOptions.find(opt => opt.value === formData.tipoMantenimiento) || null}
++                        onChange={opt => setFormData(prev => ({ ...prev, tipoMantenimiento: opt?.value || '' }))}
++                        placeholder="Seleccione un tipo"
++                    />
++                    {errors.tipoMantenimiento && <p className={styles.error}>Este campo es obligatorio</p>}
+ 
+                     <label>Prioridad</label>
+-                    <select name="prioridad" value={form.prioridad} onChange={handleChange}>
+-                        <option value="Baja">Baja</option>
+-                        <option value="Media">Media</option>
+-                        <option value="Alta">Alta</option>
+-                    </select>
+-
+-                    <label>Trabajo solicitado</label>
+-                    <textarea name="trabajoSolicitado" value={form.trabajoSolicitado} onChange={handleChange} />
++                    <CustomSelect
++                        options={prioridadOptions}
++                        value={prioridadOptions.find(opt => opt.value === formData.prioridad) || null}
++                        onChange={opt => setFormData(prev => ({ ...prev, prioridad: opt?.value || '' }))}
++                        placeholder="Seleccione prioridad"
++                    />
++
++                    <label>Trabajo solicitado<span>*</span></label>
++                    <textarea
++                        name="trabajoSolicitado"
++                        value={formData.trabajoSolicitado}
++                        onChange={e => setFormData(prev => ({ ...prev, trabajoSolicitado: e.target.value }))}
++                    />
++                    {errors.trabajoSolicitado && <p className={styles.error}>Este campo es obligatorio</p>}
+ 
+                     <div className={styles.buttonGroup}>
+-                        <button onClick={handleConfirm} className={styles.saveButton}>Guardar</button>
+-                        <button onClick={onClose} className={styles.cancelButton}>Cancelar</button>
++                        <button type="submit" className={styles.saveButton}>GUARDAR</button>
++                        <button type="button" className={styles.cancelButton} onClick={onClose}>CANCELAR</button>
+                     </div>
+-                </div>
++                </form>
+             </div>
+         </div>
+     );

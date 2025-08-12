@@ -1,0 +1,153 @@
+.container {
+    margin-left: 220px;
+    padding: 2rem;
+    background-color: #f4f7fa;
+    min-height: 100vh;
+}
+
+.title {
+    font-size: 1.7rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.grid2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.gridFull {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+.fieldFull {
+    display: flex;
+    flex-direction: column;
+}
+
+.fieldSpan3 {
+    display: flex;
+    flex-direction: column;
+    grid-column: span 3;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    color: #273653;
+
+}
+
+label span {
+    color: red;
+    margin-left: 2px;
+}
+
+input,
+textarea,
+select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.divider {
+    border: none;
+    border-top: 2px solid #666;
+    margin: 0;
+}
+
+.error {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.sparePartRow {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    background-color: #eef2f7;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.sparePartRow input {
+    width: 92%;
+    padding: 0.4rem;
+    font-size: 0.95rem;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    justify-content: center;
+}
+
+.saveButton,
+.cancelButton {
+    padding: 0.7rem 1.5rem;
+    margin-right: 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.saveButton {
+    background-color: #056c44;
+    color: white;
+}
+
+.cancelButton {
+    background-color: #c72828;
+    color: white;
+}
+
+.saveButton:hover {
+    background-color: #038052;
+}
+
+.cancelButton:hover {
+    background-color: #a51212;
+}

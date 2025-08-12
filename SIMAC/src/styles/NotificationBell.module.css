@@ -1,0 +1,26 @@
+.bellContainer {
+    position: relative;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #056C44;
+}
+
+.bell {
+    transition: transform 0.2s ease;
+}
+
+.bellContainer:hover .bell {
+    transform: scale(1.1);
+}
+
+.alertDot {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 1px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+

@@ -1,0 +1,64 @@
+.wrapper {
+    max-width: 600px;
+    font-family: inherit;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.custom__control {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0.25rem;
+    min-height: 2.5rem;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.custom__control--is-focused {
+    border-color: #056c44;
+    box-shadow: 0 0 0 2px rgba(5, 108, 68, 0.2);
+}
+
+.custom__menu {
+    margin-top: 0.25rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.custom__menu-list {
+    max-height: 200px;
+    padding: 0;
+}
+
+.custom__option {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.custom__option--is-focused {
+    background-color: #64A48C;
+    color: white;
+}
+
+.custom__option--is-selected {
+    background-color: #056c44;
+    color: white;
+}
+
+.custom__placeholder {
+    color: #666;
+}
+
+.custom__single-value {
+    color: #000;
+}
+
+.custom__dropdown-indicator svg {
+    fill: #666;
+}
+
+.custom__control:hover .custom__dropdown-indicator svg {
+    fill: #056c44;
+}

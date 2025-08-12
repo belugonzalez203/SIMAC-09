@@ -1,0 +1,40 @@
+diff a/SIMAC/vite.config.ts b/SIMAC/vite.config.ts	(rejected hunks)
+@@ -1,8 +1,9 @@
++/// <reference types="node" />
+ import { defineConfig } from "vite";
+ import react from "@vitejs/plugin-react";
+ import { VitePWA } from "vite-plugin-pwa";
++import { resolve } from "path";
+ 
+-// @ts-expect-error process is a nodejs global
+ const host = process.env.TAURI_DEV_HOST;
+ 
+ // https://vitejs.dev/config/
+@@ -55,4 +56,26 @@ export default defineConfig(async () => ({
+             ignored: ["*/src-tauri/*"],
+         },
+     },
++    build: {
++        rollupOptions: {
++            input: {
++                main: resolve(__dirname, 'index.html'),
++            },
++        },
++    },
++
++    // redirecciona rutas 404 a index.html
++    // así React Router maneja las rutas correctamente
++    resolve: {
++        alias: {
++            '@': resolve(__dirname, 'src'),
++        },
++    },
++    // ⚠usa middleware de Vite para SPA fallback
++    // Agrega esto si el error 404 persiste:
++    preview: {
++        port: 1420,
++        strictPort: true,
++        host: host || false,
++    },
+ }));
+\ No newline at end of file

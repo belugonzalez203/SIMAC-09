@@ -1,0 +1,122 @@
+diff a/SIMAC/src/components/Sidebar.tsx b/SIMAC/src/components/Sidebar.tsx	(rejected hunks)
+@@ -1,70 +1,98 @@
+ import { useNavigate } from 'react-router-dom';
+ import { useState } from 'react';
+-import NewOrderModal from '../views/OrderView/NewOrderModal.tsx';
+ import  { NavLink } from 'react-router-dom';
+ import styles from '../styles/Sidebar.module.css';
++import NewOrderModal from '../views/OrderView/NewOrderModal.tsx';
++import CreateAreaModal from '../views/AreaView/CreateAreaModal.tsx';
++import CreateEquipmentModal from '../views/EquipmentView/CreateEquipmentView.tsx';
++import CreateSparePartsModal from "../views/SparePartsView/CreateSparePartsModal.tsx";
++import CreateTechnicianModal from "../views/TechnicianView/CreateTechnicianModal.tsx";
++import CreateTypeMaintenanceModal from "../views/TypeMaintenanceView/CreateTypeModal.tsx"
+ 
+ const Sidebar = () => {
+-    const [showModal, setShowModal] = useState(false);
++    const [activeModal, setActiveModal] = useState<string | null>(null);
+     const navigate = useNavigate();
+ 
+-    const handleConfirm = (data: any) => {
++    const handleConfirmOrder = (data: any) => {
+         navigate('/order/create', { state: data });
+     };
+ 
++    const handleConfirmArea = (data: any) => {
++        navigate('/areas', { state: data });
++    };
++
++    const handleConfirmEquipment = (data: any) => {
++        navigate('/equipos', { state: data });
++    };
++
++    const handleConfirmSparePart = (data: any) => {
++        navigate('/repuestos', { state: data });
++    };
++
++    const handleConfirmTechnician = (data: any) => {
++        navigate('/tecnicos', { state: data });
++    };
++
++    const handleConfirmTypeMaintenance = (data: any) => {
++        navigate('/type/maintenance', { state: data });
++    };
++
+     return (
+         <aside className={styles.sidebar}>
+             <nav>
+                 <ul className={styles.navList}>
+-                    <li>
++                    <li className={styles.combinedItem}>
+                         <NavLink
+                             to="/order/receivedList"
+                             className={({ isActive }) =>
+                                 isActive ? `${styles.link} ${styles.active}` : styles.link
+                             }
+                         >
+-                            Órdenes de Trabajo
++                            Órdenes Recibidas
+                         </NavLink>
+-                    </li>
+-                    <li>
+                         <button
+-                            className={`${styles.subLink} ${styles.buttonLink}`}
+-                            onClick={() => setShowModal(true)}
++                            className={`${styles.iconButton}`}
++                            onClick={() => setActiveModal("order")}
++                            title="Crear nueva orden"
+                         >   <img src="/add.png" alt="addNew" className={styles.img} />
+-                            Nuevo
+                         </button>
+                     </li>
+-                    <li>
++                    <li className={styles.combinedItem}>
+                         <NavLink
+-                            to="/horometros"
++                            to="/order/executedList"
+                             className={({ isActive }) =>
+                                 isActive ? `${styles.link} ${styles.active}` : styles.link
+                             }
+                         >
+-                            Control de Horómetros
++                            Órdenes Ejecutadas
+                         </NavLink>
+                     </li>
+-                    <li>
++                    <li className={styles.combinedItem}>
+                         <NavLink
+-                            to="/equipos"
++                            to="/horometros"
+                             className={({ isActive }) =>
+                                 isActive ? `${styles.link} ${styles.active}` : styles.link
+                             }
+                         >
+-                            Equipos
++                            Control Horómetros
+                         </NavLink>
+                     </li>
+-                    <li>
+-                        <NavLink ///////////////////////////////////////////////////////////////////////////////////////////
+-                            to="/equipment/create"
++                    <li className={styles.combinedItem}>
++                        <NavLink
++                            to="/equipos"
+                             className={({ isActive }) =>
+-                                isActive ? `${styles.subLink} ${styles.active}` : styles.subLink
++                                isActive ? `${styles.link} ${styles.active}` : styles.link
+                             }
+                         >
+-                            <img src="/add.png" alt="addNew" className={styles.img} />Nuevo
++                            Equipos
+                         </NavLink>
++                        <button
++                            className={`${styles.subLink} ${styles.buttonLink}`}
++                            onClick={() => setActiveModal("equipment")}
++                        >   <img src="/add.png" alt="addNew" className={styles.img} />
++                        </button>
+                     </li>
+-                    <li>
++                    <li className={styles.combinedItem}>
+                         <NavLink
+                             to="/repuestos"
+                             className={({ isActive }) =>

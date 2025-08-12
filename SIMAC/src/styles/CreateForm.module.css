@@ -1,0 +1,121 @@
+.container {
+    margin-left: 220px;
+    padding: 2rem;
+    background-color: #f4f7fa;
+    min-height: 100vh;
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 3rem;
+    padding-left: 15%;
+    color: #2c3e50;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    padding-left: 17%;
+    gap: 1.5rem;
+    max-width: 600px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+
+}
+
+
+
+label {
+
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+
+}
+
+label span {
+    color: red;
+    margin-left: 2px;
+}
+
+input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+input:focus {
+    outline: none;
+    border-color: #056c44;
+    box-shadow: 0 0 0 2px rgba(5, 108, 68, 0.2);
+}
+
+.error {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: white;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+select:focus {
+    outline: none;
+    border-color: #056c44;
+    box-shadow: 0 0 0 2px rgba(5, 108, 68, 0.2);
+}
+
+option {
+    font-size: 1rem;
+    background-color: #f4f4f4;
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    margin-left: 25%;
+}
+
+.saveButton {
+    background-color: #056c44;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    margin-right: 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cancelButton {
+    background-color: #c72828;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.saveButton:hover {
+    background-color: #038052;
+}
+
+.cancelButton:hover {
+    background-color: #a51212;
+}

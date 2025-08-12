@@ -1,0 +1,16 @@
+body {
+    background-color: #E3E9F1;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+.navbar {
+    background-color: #FFFFFF;
+    color: white;
+    padding: 1rem;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+}

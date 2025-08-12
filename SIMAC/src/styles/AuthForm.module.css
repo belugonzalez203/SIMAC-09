@@ -1,0 +1,117 @@
+.registerOverlay {
+    position: fixed;
+    top: 13vh;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.registerModal {
+    background: white;
+    padding: 2rem;
+    padding-top: 1rem;
+    margin-bottom: 4rem;
+    border-radius: 8px;
+    width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease;
+    height: 80%;
+}
+
+.registerTitle {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.registerForm label {
+    display: block;
+    margin-top: 1rem;
+}
+
+.registerField {
+    margin-bottom: 1rem;
+}
+
+.registerForm input,
+.registerForm select {
+    width: 100%;
+    padding: 0.4rem;
+    margin-top: 0.3rem;
+
+}
+
+.registerButtonGroup {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.registerSaveButton {
+    background-color: #056c44;
+    color: white;
+    border: none;
+    padding: 0.7rem 1rem;
+    margin-right: 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.registerCancelButton {
+    background-color: #c72828;
+    color: white;
+    border: none;
+    padding: 0.7rem 1rem;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.registerSaveButton:hover {
+    background-color: #038052;
+}
+
+.registerCancelButton:hover {
+    background-color: #a51212;
+}
+
+.registerError {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+}
+
+.eyeIcon {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    cursor: pointer;
+    color: #2c3e50;
+}
+
+/* Contenedor del campo de contraseña con ícono */
+.passwordWrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
