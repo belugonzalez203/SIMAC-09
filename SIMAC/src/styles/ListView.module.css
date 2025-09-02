@@ -84,10 +84,100 @@
     color: #007bff;
     cursor: pointer;
     font-size: 1.1rem;
+    padding: 0 1rem;
 }
 
 .deleteIcon {
     color: red;
     cursor: pointer;
     font-size: 1.1rem;
+    padding: 0 1rem;
+}
+
+.img {
+    height: 27px;
+    padding: 0 1rem;
+    vertical-align: middle;
+}
+
+.hourmeterTableWrapper {
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.hourmeterTable {
+    width: auto;
+    border-collapse: collapse;
+    margin: auto;
+}
+
+.hourmeterTable th {
+    padding: 0.5rem;
+    text-align: center;
+    font-weight: bold;
+    background-color: #f2f2f2;
+    color: #2c3e50;
+    min-width: 140px;
+    max-width: 200px;
+    white-space: normal;
+    word-wrap: break-word;
+    border: 1px solid #ccc;
+}
+
+.hourmeterTable td {
+    padding: 0.5rem;
+    text-align: center;
+    border: 1px solid #ccc;
+}
+
+.hourmeterTable input {
+    width: 90%;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+
+.buttonLink {
+    display: flex;
+    align-items: center;
+}
+
+.buttonLink:hover {
+    transform: scale(1.1);
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    margin-left: 25%;
+}
+
+.saveButton {
+    background-color: #056c44;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    margin-right: 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cancelButton {
+    background-color: #c72828;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.saveButton:hover {
+    background-color: #038052;
+}
+
+.cancelButton:hover {
+    background-color: #a51212;
 }
