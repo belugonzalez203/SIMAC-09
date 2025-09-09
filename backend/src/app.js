@@ -5,8 +5,10 @@ const workOrderSparePartsRoutes = require("./routes/workOrderSpareParts");
 const workOrderTechnicians = require("./routes/workOrderTechnicians")
 const typeChangeMaintenance = require("./routes/typeChangeMaintenance")
 const areas = require("./routes/areas")
-const app = express();
+const equipments = require("./routes/equipments")
+const serviceStatusEquipment = require("./routes/serviceStatusEquipment")
 
+const app = express();
 // Middlewares
 app.use(cors());
 app.use(express.json());
@@ -17,5 +19,7 @@ app.use("/workOrderSpareParts", workOrderSparePartsRoutes);
 app.use("/workOrderTechnicians", workOrderTechnicians);
 app.use("/typeChangeMaintenance", typeChangeMaintenance);
 app.use("/area", areas);
+app.use("/equipment", equipments);
+app.use("/serviceStatusEquipment", serviceStatusEquipment);
 
 module.exports = app;
