@@ -7,6 +7,7 @@ const typeChangeMaintenance = require("./routes/typeChangeMaintenance")
 const areas = require("./routes/areas")
 const equipments = require("./routes/equipments")
 const serviceStatusEquipment = require("./routes/serviceStatusEquipment")
+const technician = require("./routes/technician")
 
 const app = express();
 // Middlewares
@@ -21,5 +22,6 @@ app.use("/typeChangeMaintenance", typeChangeMaintenance);
 app.use("/area", areas);
 app.use("/equipment", equipments);
 app.use("/serviceStatusEquipment", serviceStatusEquipment);
+app.use("/technician", technician);
 
 module.exports = app;
