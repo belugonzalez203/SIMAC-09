@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database');
+const db = require('../config/database');
 
 router.get('/', (req, res) => {
     db.all('SELECT * FROM work_order_spare_parts', [], (err, rows) => {

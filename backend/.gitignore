@@ -1,0 +1,17 @@
+# Gitignore raíz
+
+# Mac y Linux
+.DS_Store
+
+# IntelliJ
+.idea/
+*.iml
+
+# Maven y Java
+target/
+*.log
+
+# Node y React
+node_modules/
+dist/
+.env

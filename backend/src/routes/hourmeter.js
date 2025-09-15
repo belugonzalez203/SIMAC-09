@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database');
-
+const db = require('../config/database');
+/*
+    Ruta probada da error last_updated, aumnetar y ya da normal
+*/
 router.get('/', (req, res) => {
     const { area, equipment } = req.query;
 
@@ -76,6 +78,9 @@ router.get('/', (req, res) => {
     });
 });
 
+/*
+    Ruta probada duda en objeto hours
+*/
 router.post('/', (req, res) => {
     const { id_equip, hours } = req.body;
 
@@ -144,6 +149,9 @@ router.post('/', (req, res) => {
     });
 });
 
+/*
+    Ruta probada error por que no hay columna last_updated
+*/
 router.put('/', (req, res) => {
     const { id_equip, id_type_change, hour_current } = req.body;
 
@@ -202,6 +210,9 @@ router.put('/', (req, res) => {
     });
 });
 
+/*
+    Ruta probada error por que no hay columna last_updated
+*/
 router.get('/alerts', (req, res) => {
     const query = `
         SELECT 
