@@ -1,35 +1,109 @@
 import styles from '../../styles/ListView.module.css';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
-import {useNavigate} from "react-router-dom";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import CreateTechnicianModal from './CreateTechnicianModal';
+import EditTechnicianModal from './EditTechnicianModal';
 
-const mockTechnicians = [
-    { Código: 1, Nombre: 'Walter Veizaga', Contacto: '74185236', Área: 'Molienda de esmaltes' },
-    { Código: 2, Nombre: 'Damian Flores', Contacto: '74185236', Área: 'Molienda de esmaltes' },
-    { Código: 3, Nombre: 'Pedro Jimenez', Contacto: '74185236', Área: 'Producción' },
-    { Código: 4, Nombre: 'Walter Veizaga', Contacto: '74185236', Área: 'Producción' },
-    { Código: 5, Nombre: 'Pedro Jimenez', Contacto: '74185236', Área: 'Seguridad industrial' },
-    { Código: 6, Nombre: 'Damian Flores', Contacto: '74185236', Área: 'Equipos' },
-    { Código: 7, Nombre: 'Pedro Jimenez', Contacto: '74185236', Área: 'Barbotina' },
-    { Código: 8, Nombre: 'Pedro Jimenez', Contacto: '74185236', Área: 'Barbotina' },
-    { Código: 9, Nombre: 'Pedro Jimenez', Contacto: '74185236', Área: 'Comercialización' },
-    { Código: 10, Nombre: 'Walter Veizaga', Contacto: '74185236', Área: 'Comercialización' },
-];
+interface Technician {
+    id_tech: string;
+    name_tech: string;
+    contact_number_tech: string;
+    name_area?: string | null;
+    id_area?: string | null;
+}
 
-const TechnicianView = () => {
-    const navigate = useNavigate();
+function TechnicianView() {
+    const [technicians, setTechnicians] = useState<Technician[]>([]);
+    const [filteredTechnicians, setFilteredTechnicians] = useState<Technician[]>([]);
+    const [searchCode, setSearchCode] = useState('');
+    const [searchName, setSearchName] = useState('');
+    const [searchArea, setSearchArea] = useState('');
+    const [isCreateModalOpen, setisCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedTechnician, setSelectedTechnician] = useState<Technician | null>(null);
 
-    const handleCreateClick = () => {
-        navigate('/technician/create');
+    useEffect(() => {
+        fetchTechnicians();
+    }, []);
+
+    const fetchTechnicians = () => {
+        axios.get('http://localhost:3002/technician/')
+            .then(res => {
+                setTechnicians(res.data.data);
+                setFilteredTechnicians(res.data.data);
+            })
+            .catch(err => {
+                console.error('Error al cargar técnicos:', err);
+            });
     };
+
+    useEffect(() => {
+        const filtered = technicians.filter(t =>
+            t.id_tech.toLowerCase().includes(searchCode.toLowerCase()) &&
+            t.name_tech.toLowerCase().includes(searchName.toLowerCase()) &&
+            (t.name_area ?? '').toLowerCase().includes(searchArea.toLowerCase())
+        );
+        setFilteredTechnicians(filtered);
+    }, [searchCode, searchName, searchArea, technicians]);
+
+    const handleDelete = (id: string) => {
+        if (!window.confirm('¿Deseas eliminar este técnico?')) return;
+
+            axios.delete(`http://localhost:3002/technician/${id}`)
+                .then(() => {
+                    setTechnicians(prev => prev.filter(t => t.id_tech !== id));
+                    console.log(`Técnico ${id} eliminado correctamente`);
+                })
+                .catch(err => {
+                    console.error(`Error al eliminar técnico ${id}:`, err);
+                    alert('Hubo un error al eliminar el técnico');
+                });
+            fetchTechnicians();
+        };
+
+        const handleOpenEdit = (technician: Technician) => {
+            setSelectedTechnician(technician);
+            setIsEditModalOpen(true);
+        };
+
+        const handleConfirmCreate = () => {
+            setisCreateModalOpen(false);
+            fetchTechnicians();
+        };
+
+        const handleConfirmEdit = () => {
+            setIsEditModalOpen(false);
+            fetchTechnicians();
+        };
 
     return (
         <div className={styles.container}>
             <h2 className={styles.title}>TÉCNICOS</h2>
             <div className={styles.actions}>
-                <button className={styles.createButton} onClick={handleCreateClick}>
-                    Crear Nuevo
-                </button>
+                <input
+                    type="text"
+                    placeholder="Buscar por código"
+                    value={searchCode}
+                    onChange={(e) => setSearchCode(e.target.value)}
+                    className={styles.searchInput}
+                />
+                <input
+                    type="text"
+                    placeholder="Buscar por nombre"
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                    className={styles.searchInput}
+                />
+                <input
+                    type="text"
+                    placeholder="Buscar por área"
+                    value={searchArea}
+                    onChange={(e) => setSearchArea(e.target.value)}
+                    className={styles.searchInput}
+                />
             </div>
+
             <div className={styles.tableWrapper}>
                 <table className={styles.table}>
                     <thead>
