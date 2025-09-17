@@ -67,4 +67,27 @@ router.delete('/:id', (req, res) => {
     });
 });
 
+router.get('/hourmeters/available', (req, res) => {
+    const query = `
+        SELECT
+            e.id_equip   AS id_equip,
+            e.name_equip AS name_equip,
+            e.code_equip AS code_equip,
+            a.name_area  AS name_area
+        FROM equipments e
+        LEFT JOIN hourmeters h ON e.id_equip = h.id_equip
+        JOIN areas a ON a.id_area = e.id_area
+        WHERE h.id_equip IS NULL
+    `;
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            console.error('Error al obtener los equipos:', err);
+            return res.status(500).json({ error: 'Error al obtener los equipos' });
+        }
+        res.json({ data: rows });
+    });
+});
+
+
+
 module.exports = router;

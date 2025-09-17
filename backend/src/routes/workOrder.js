@@ -28,6 +28,32 @@ router.get('/executed', (req, res) => {
     });
 });
 
+router.get('/pending', (req, res) => {
+    const query = `
+        SELECT
+            wo.id_order                AS id_order,
+            t.id_tech                  AS id_tech,
+            t.name_tech                AS name_tech,
+            e.code_equip               AS code_equip,
+            e.name_equip               AS name_equip,
+            e.brand_equip              AS brand_equip,
+            a.name_area                AS name_area,
+            wo.completion_date         AS completion_date
+        FROM work_orders wo
+        LEFT JOIN technicians t        ON wo.id_tech  = t.id_tech
+        LEFT JOIN equipments e         ON e.id_equip  = wo.id_equip
+        LEFT JOIN areas a              ON e.id_area   = a.id_area
+        WHERE wo.work_finished = 0;
+        `;
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            console.error('Error al obtener la orden de trbajo ejecutados:', err);
+            return res.status(500).json({ error: 'Error al obtener la orden de trabajo ejecutados' });
+        }
+        res.json({ data: rows });
+    });
+});
+
 router.get('/:id', (req, res) => {
     const { id } = req.params;
 
@@ -70,6 +96,86 @@ router.get('/:id', (req, res) => {
         }
         res.json({ data: rows });
     });
+});
+
+router.post('/:id/spareParts', (req, res) => {
+    const { id } = req.params;
+    const { spareParts } = req.body;
+
+    if (!Array.isArray(spareParts) || spareParts.length === 0) {
+        return res.status(400).json({
+            error: 'Debes enviar un array spareParts con al menos un elemento'
+        });
+    }
+
+    for (const s of spareParts) {
+        if (!s.id_spare_part) {
+            return res.status(400).json({ error: 'Cada repuesto necesita id_spare_part' });
+        }
+    }
+
+    // Insertar uno por uno (si usas sqlite3)
+    const query = `
+        INSERT INTO work_order_spare_parts (
+        id_order,
+        id_spare_part,
+        quantity_used,
+        hour_current,
+        hour_change
+        ) VALUES (?, ?, ?, ?, ?)
+    `;
+
+    const stmt = db.prepare(query);
+
+    try {
+        for (const s of spareParts) {
+            stmt.run([
+                id,
+                s.id_spare_part,
+                s.quantity_used || 1,
+                s.hour_current || 0,
+                s.hour_change || 0
+            ]);
+        }
+
+        stmt.finalize();
+
+        res.status(201).json({
+            message: 'Repuestos asignados correctamente',
+            count: spareParts.length
+        });
+    } catch (err) {
+        console.error('Error al insertar repuestos:', err);
+        res.status(500).json({ error: 'Error al insertar repuestos' });
+    }
+});
+
+router.post('/:id/technicians', (req, res) => {
+    const { id } = req.params; 
+    const { technicians } = req.body;
+    if (!Array.isArray(technicians) || technicians.length === 0) {
+        return res.status(400).json({
+            error: 'Debes enviar un array technicians con al menos un técnico'
+        });
+    }
+    const query = `
+        INSERT INTO work_order_technicians (id_order, id_tech)
+        VALUES (?, ?)
+    `;
+    const stmt = db.prepare(query);
+    try {
+        for (const techId of technicians) {
+            stmt.run([id, techId]);
+        }
+        stmt.finalize();
+        res.status(201).json({
+            message: 'Técnicos asignados correctamente',
+            count: technicians.length
+        });
+    } catch (err) {
+        console.error('Error al asignar técnicos:', err);
+        res.status(500).json({ error: 'Error al asignar técnicos' });
+    }
 });
 
 module.exports = router;
