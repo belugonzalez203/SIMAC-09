@@ -3,7 +3,12 @@ const router = express.Router();
 const db = require('../config/database');
 
 router.get('/', (req, res) => {
-    const query = `SELECT * FROM technicians`;
+    const query = `
+        SELECT t.id_tech, t.name_tech, t.contact_number_tech,
+               t.id_area, a.name_area
+        FROM technicians t
+        LEFT JOIN areas a ON t.id_area = a.id_area
+    `;
     db.all(query, [], (err, rows) => {
         if (err) {
             console.error('Error al obtener los tecnicos:', err);

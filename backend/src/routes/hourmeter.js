@@ -223,8 +223,8 @@ router.get('/alerts', (req, res) => {
             tc.name_change AS maintenance_type,
             hm.hour_current,
             hm.hour_change,
-            hm.next_hour_change,
-            (hm.hour_alert - ROUND((julianday('now') - julianday(hm.last_updated)) * 24, 0)) AS hour_alert
+            hm.next_hour_change
+   --         (hm.hour_alert - ROUND((julianday('now') - julianday(hm.last_updated)) * 24, 0)) AS hour_alert
         FROM hourmeters hm
         JOIN equipments eq ON hm.id_equip = eq.id_equip
         LEFT JOIN areas ar ON eq.id_area = ar.id_area
