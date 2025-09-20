@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS "hourmeters" (
 );
 CREATE TABLE IF NOT EXISTS "work_orders" (
 	"id_order"	INTEGER NOT NULL,
-	"id_user"	TEXT NOT NULL,
+	"id_user"	TEXT,
 	"id_tech"	TEXT NOT NULL,
 	"id_equip"	INTEGER NOT NULL,
 	"date_request"	TEXT NOT NULL,

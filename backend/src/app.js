@@ -10,6 +10,7 @@ const serviceStatusEquipment = require("./routes/serviceStatusEquipment")
 const technician = require("./routes/technician")
 const sparePart = require("./routes/sparePart")
 const workOrders = require("./routes/workOrder")
+const maintenance = require("./routes/maintenance")
 
 const app = express();
 // Middlewares
@@ -27,5 +28,6 @@ app.use("/serviceStatusEquipment", serviceStatusEquipment);
 app.use("/technician", technician);
 app.use("/sparePart", sparePart);
 app.use("/workOrders", workOrders);
+app.use("/maintenance", maintenance);
 
 module.exports = app;

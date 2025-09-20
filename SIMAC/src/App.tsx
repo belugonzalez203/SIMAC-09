@@ -5,7 +5,7 @@ import EquipmentView from "./views/EquipmentView/EquipmentView.tsx";
 import AreaView from "./views/AreaView/AreaView.tsx";
 import SparePartsView from "./views/SparePartsView/SpareParts.tsx";
 import ViewOrderReceived from "./views/OrderView/OrderReceivedView.tsx";
-import OrderReceivedList from "./views/OrderView/OrderReceivedView.tsx";
+import OrderReceivedList from "./views/OrderView/ListOrderReceived.tsx";
 import ExecuteOrderView from "./views/OrderView/ExecuteOrder.tsx";
 import ListExecutedOrder from "./views/OrderView/ListExecutedOrder.tsx";
 import HourmetersPivotView from "./views/HourmeterView/HourmetersPivotView.tsx";

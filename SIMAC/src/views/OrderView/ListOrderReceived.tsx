@@ -9,7 +9,7 @@ interface Order {
     name_equip: string;
     brand_equip: string;
     name_area: string;
-    completion_date: string;
+    date_delivery: string;
     id_tech: string;
     name_tech: string;
 }
@@ -25,7 +25,7 @@ const ExecutedOrderList: React.FC = () => {
     const [searchTechnician, setSearchTechnician] = useState('');
 
     useEffect(() => {
-        axios.get('http://localhost:3002/workOrders/executed')
+        axios.get('http://localhost:3002/workOrders/pending')
             .then(res => {
                 setOrders(res.data.data);
                 setFilteredOrders(res.data.data);
@@ -50,7 +50,7 @@ const ExecutedOrderList: React.FC = () => {
 
     return (
         <div className={styles.container}>
-            <h2 className={styles.title}>ÓRDENES EJECUTADAS</h2>
+            <h2 className={styles.title}>ÓRDENES RECIBIDAS</h2>
 
             <div className={styles.actions}>
                 <input
@@ -93,9 +93,8 @@ const ExecutedOrderList: React.FC = () => {
                         <th>Área</th>
                         <th>Entregado</th>
                         <th>Técnico</th>
-                        <th>FichaT</th>
                         <th>Ver más</th>
-                        <th>Imprimir</th>
+                        <th>Ejecutar</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -105,9 +104,8 @@ const ExecutedOrderList: React.FC = () => {
                             <td>{order.code_equip}-{order.name_equip}</td>
                             <td>{order.brand_equip}</td>
                             <td>{order.name_area}</td>
-                            <td>{order.completion_date}</td>
-                            <td>{order.name_tech}</td>
-                            <td>{order.id_tech}</td>
+                            <td>{order.date_delivery}</td>
+                            <td>{order.id_tech}-{order.name_tech}</td>
                             <td className={styles.iconCell}>
                                 <button
                                     className={`${styles.subLink} ${styles.buttonLink}`}
@@ -121,7 +119,7 @@ const ExecutedOrderList: React.FC = () => {
                                     className={styles.buttonLink}
                                     onClick={() => navigate(`/order/print/${order.id_order}`)}
                                 >
-                                    <img src="/print.png" alt="printOrder" className={styles.img} />
+                                    <img src="/execute.png" alt="printOrder" className={styles.img} />
                                 </button>
                             </td>
                         </tr>

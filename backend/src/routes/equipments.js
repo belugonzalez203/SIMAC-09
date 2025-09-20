@@ -98,6 +98,32 @@ router.get('/hourmeters/available', (req, res) => {
     });
 });
 
+router.put("/updateService/:id_equip", (req, res) => {
+    const { id_equip } = req.params;
+    const { id_service } = req.body;
 
+    if (!id_service) {
+        return res.status(400).json({ error: "El campo id_service es obligatorio." });
+    }
+
+    const sql = `UPDATE equipments SET id_service = ? WHERE id_equip = ?`;
+
+    db.run(sql, [id_service, id_equip], function (err) {
+        if (err) {
+            console.error("Error al actualizar el servicio del equipo:", err.message);
+            return res.status(500).json({ error: "Error interno del servidor." });
+        }
+
+        if (this.changes === 0) {
+            return res.status(404).json({ error: "Equipo no encontrado." });
+        }
+
+        return res.json({
+            message: "Servicio actualizado correctamente.",
+            id_equip,
+            id_service,
+        });
+    });
+});
 
 module.exports = router;

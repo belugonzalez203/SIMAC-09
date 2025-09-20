@@ -38,7 +38,7 @@ router.get('/pending', (req, res) => {
             e.name_equip               AS name_equip,
             e.brand_equip              AS brand_equip,
             a.name_area                AS name_area,
-            wo.completion_date         AS completion_date
+            wo.date_delivery           AS date_delivery
         FROM work_orders wo
         LEFT JOIN technicians t        ON wo.id_tech  = t.id_tech
         LEFT JOIN equipments e         ON e.id_equip  = wo.id_equip
@@ -52,6 +52,59 @@ router.get('/pending', (req, res) => {
         }
         res.json({ data: rows });
     });
+});
+
+router.post('/post', (req, res) => {
+    const {
+        id_user,
+        id_tech,
+        id_equip,
+        date_delivery,
+        id_type,
+        id_class,
+        priority,
+        work_requested
+    } = req.body;
+
+    if (!id_user || !id_tech || !id_equip || !id_type || !id_class || !work_requested) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios' });
+    }
+
+    const now = new Date();
+    const date_request = now.toISOString().split('T')[0];
+    const hour_request = now.toTimeString().slice(0, 5);
+
+    const query = `
+        INSERT INTO work_orders 
+        (id_user, id_tech, id_equip, date_request, hour_request, date_delivery, id_type, id_class, priority, work_requested) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.run(
+        query,
+        [
+            id_user,
+            id_tech,
+            id_equip,
+            date_request,
+            hour_request,
+            date_delivery || null,
+            id_type,
+            id_class,
+            priority || null,
+            work_requested
+        ],
+        function (err) {
+            if (err) {
+                console.error('Error al insertar orden de trabajo:', err);
+                return res.status(500).json({ error: 'Error al crear la orden de trabajo' });
+            }
+            res.status(201).json({
+                message: 'Orden de trabajo creada exitosamente',
+                id_order: this.lastID
+            });
+        }
+    );
 });
 
 router.get('/:id', (req, res) => {

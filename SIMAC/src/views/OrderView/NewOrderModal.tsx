@@ -134,7 +134,7 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
                 ))
                 .catch(err => console.error('Error al cargar equipos:', err));
 
-            axios.get('http://localhost:3002/classMaintenance/')
+            axios.get('http://localhost:3002/maintenance/class')
                 .then(res => setClaseOptions(
                     res.data.data.map((c: any) => ({
                         value: String(c.id_class),
@@ -143,7 +143,7 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
                 ))
                 .catch(err => console.error('Error al cargar clases de mantenimiento:', err));
 
-            axios.get('http://localhost:3002/typeMaintenance/')
+            axios.get('http://localhost:3002/maintenance/type')
                 .then(res => setTipoOptions(
                     res.data.data.map((t: any) => ({
                         value: String(t.id_type),
