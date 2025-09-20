@@ -91,7 +91,7 @@ const ExecutedOrderList: React.FC = () => {
                         <th>Equipo</th>
                         <th>Marca</th>
                         <th>Área</th>
-                        <th>Entregado</th>
+                        <th>Fecha Entrega</th>
                         <th>Técnico</th>
                         <th>Ver más</th>
                         <th>Ejecutar</th>
@@ -109,7 +109,7 @@ const ExecutedOrderList: React.FC = () => {
                             <td className={styles.iconCell}>
                                 <button
                                     className={`${styles.subLink} ${styles.buttonLink}`}
-                                    onClick={() => navigate(`/order/executed/${order.id_order}`)}
+                                    onClick={() => navigate(`/order/received/${order.id_order}`)}
                                 >
                                     <img src="/seeMore.png" alt="seeMore" className={styles.img} />
                                 </button>
@@ -117,9 +117,9 @@ const ExecutedOrderList: React.FC = () => {
                             <td className={styles.iconCell}>
                                 <button
                                     className={styles.buttonLink}
-                                    onClick={() => navigate(`/order/print/${order.id_order}`)}
+                                    onClick={() => navigate(`/order/execute/${order.id_order}`)}
                                 >
-                                    <img src="/execute.png" alt="printOrder" className={styles.img} />
+                                    <img src="/execute.png" alt="executeOrder" className={styles.img} />
                                 </button>
                             </td>
                         </tr>
