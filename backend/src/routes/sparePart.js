@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../config/database');
 
 router.get('/', (req, res) => {
-    const query = `SELECT * FROM spare_parts`;
+    const query = `SELECT * FROM spare_parts WHERE deleted = 0`;
     db.all(query, [], (err, rows) => {
         if (err) {
             console.error('Error al obtener los repuestos:', err);
@@ -184,6 +184,23 @@ router.get('/equipments', (req, res) => {
         }
 
         res.json({ data: rows });
+    });
+});
+
+//ELIMINADO LOGICO, RESTRINGIR
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+    const query = `UPDATE spare_parts SET deleted = 1 WHERE id_spare_part = ?`;
+
+    db.run(query, [id], function(err) {
+        if (err) {
+            console.error('Error al eliminar el repuesto:', err);
+            return res.status(500).json({ error: 'Error al eliminar' });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'Repuesto no encontrado' });
+        }
+        res.json({ message: 'Repuesto eliminado' });
     });
 });
 

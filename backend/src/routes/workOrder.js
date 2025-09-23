@@ -54,6 +54,7 @@ router.get('/pending', (req, res) => {
     });
 });
 
+//AQUI FALTA QUE SU ESTADO DE ID_EQUIP.ID_SERVICE SEA ID 1 -- REVISAR
 router.post('/post', (req, res) => {
     const {
         id_user,
@@ -99,12 +100,29 @@ router.post('/post', (req, res) => {
                 console.error('Error al insertar orden de trabajo:', err);
                 return res.status(500).json({ error: 'Error al crear la orden de trabajo' });
             }
-            res.status(201).json({
-                message: 'Orden de trabajo creada exitosamente',
-                id_order: this.lastID
-            });
-        }
-    );
+            const id_order = this.lastID;
+
+            const updateQuery = `
+                UPDATE equipments
+                SET id_service = 1
+                WHERE id_equip = ?
+            `;
+            db.run(updateQuery, [id_equip], function (err2) {
+                if (err2) {
+                    console.error('Error al actualizar estado del equipo:', err2);
+                    return res.status(500).json({
+                        error: 'Orden creada pero error al actualizar estado del equipo',
+                        id_order
+                    });
+                }
+
+                res.status(201).json({
+                    message: 'Orden de trabajo creada y estado de equipo actualizado',
+                    id_order
+                });
+            }
+            );
+        });
 });
 
 router.get('/:id', (req, res) => {
@@ -204,7 +222,7 @@ router.post('/:id/spareParts', (req, res) => {
 });
 
 router.post('/:id/technicians', (req, res) => {
-    const { id } = req.params; 
+    const { id } = req.params;
     const { technicians } = req.body;
     if (!Array.isArray(technicians) || technicians.length === 0) {
         return res.status(400).json({
@@ -230,5 +248,83 @@ router.post('/:id/technicians', (req, res) => {
         res.status(500).json({ error: 'Error al asignar técnicos' });
     }
 });
+
+router.put('/:id', (req, res) => {
+    const { id } = req.params;
+    const {
+        observations,
+        work_performed_details,
+        failure_analysis,
+        failure_cause,
+    } = req.body;
+
+    if (!id) {
+        return res.status(400).json({ error: 'Datos requeridos inválidos. Se requiere id de la WorkOrder' });
+    }
+
+    const updateWorkOrderQuery = `
+        UPDATE work_orders
+        SET 
+            observations = ?,
+            work_performed_details = ?,
+            failure_analysis = ?,
+            failure_cause = ?,
+            work_finished = 1,
+        WHERE id_order = ?
+    `;
+
+    db.run(
+        updateWorkOrderQuery,
+        [
+            observations || null,
+            work_performed_details || null,
+            failure_analysis || null,
+            failure_cause || null,
+            id
+        ],
+        function (err) {
+            if (err) {
+                console.error('Error al actualizar la orden de trabajo:', err);
+                return res.status(500).json({ error: 'Error al actualizar la orden de trabajo' });
+            }
+
+            if (this.changes === 0) {
+                return res.status(404).json({ error: 'Orden no encontrada' });
+            }
+
+            const getEquipQuery = `SELECT id_equip FROM work_orders WHERE id_order = ?`;
+
+            db.get(getEquipQuery, [id], (err2, row) => {
+                if (err2) {
+                    console.error('Error al obtener id_equip:', err2);
+                    return res.status(500).json({ error: 'Orden actualizada pero error al obtener id_equip' });
+                }
+
+                if (!row) {
+                    return res.status(404).json({ error: 'No se encontró equipo asociado a la orden' });
+                }
+
+                const id_equip = row.id_equip;
+
+                const updateEquipQuery = `UPDATE equipments SET id_service = 2 WHERE id_equip = ?`;
+
+                db.run(updateEquipQuery, [id_equip], function (err3) {
+                    if (err3) {
+                        console.error('Error al actualizar estado del equipo:', err3);
+                        return res.status(500).json({
+                            error: 'Orden actualizada pero error al actualizar estado del equipo'
+                        });
+                    }
+
+                    res.json({
+                        message: 'Orden de trabajo actualizada y estado del equipo cambiado a 2',
+                        id_equip
+                    });
+                });
+            });
+        }
+    );
+});
+
 
 module.exports = router;
