@@ -43,7 +43,15 @@ router.get('/pending', (req, res) => {
         LEFT JOIN technicians t        ON wo.id_tech  = t.id_tech
         LEFT JOIN equipments e         ON e.id_equip  = wo.id_equip
         LEFT JOIN areas a              ON e.id_area   = a.id_area
-        WHERE wo.work_finished = 0;
+        WHERE wo.work_finished = 0
+        ORDER BY
+            CASE wo.priority
+                WHEN 'Alta'  THEN 1
+                WHEN 'Media' THEN 2
+                WHEN 'Baja' THEN 3
+                ELSE 4
+                END,
+            date(wo.date_delivery) ASC;
         `;
     db.all(query, [], (err, rows) => {
         if (err) {
@@ -75,6 +83,8 @@ router.post('/post', (req, res) => {
     const date_request = now.toISOString().split('T')[0];
     const hour_request = now.toTimeString().slice(0, 5);
 
+    const final_date_delivery = date_delivery || date_request;
+
     const query = `
         INSERT INTO work_orders 
         (id_user, id_tech, id_equip, date_request, hour_request, date_delivery, id_type, id_class, priority, work_requested) 
@@ -89,7 +99,7 @@ router.post('/post', (req, res) => {
             id_equip,
             date_request,
             hour_request,
-            date_delivery || null,
+            final_date_delivery,
             id_type,
             id_class,
             priority || null,

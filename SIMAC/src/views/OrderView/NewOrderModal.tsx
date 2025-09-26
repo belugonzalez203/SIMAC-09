@@ -57,11 +57,6 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
         tipoMantenimiento: false,
     });
 
-//    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-  //      const { name, value } = e.target;
-    //    setForm(f => ({ ...f, [name]: value }));
-   // };
-
     const validate = () => {
         const today = new Date().toISOString().slice(0, 10);
 
@@ -78,12 +73,6 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
         setErrors(newErrors);
         return !Object.values(newErrors).some(Boolean);
     };
-
-    //const handleConfirm = () => {
-    //    onConfirm(form);
-    //    navigate('/order/create', { state: form });
-    //    onClose();
-    //};
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
