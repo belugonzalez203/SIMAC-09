@@ -44,12 +44,3 @@ const App = () => {
 }
 
 export default App;
-
-/**
- *
- *  return (
- *         <MainLayout>
- *             <TechnicianView />
- *         </MainLayout>
- *     );
- */

@@ -269,7 +269,7 @@ router.put('/:id', (req, res) => {
             work_performed_details = ?,
             failure_analysis = ?,
             failure_cause = ?,
-            work_finished = 1,
+            work_finished = 1
         WHERE id_order = ?
     `;
 

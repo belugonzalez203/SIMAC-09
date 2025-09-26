@@ -1,129 +1,59 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import React, {useEffect, useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
 import styles from '../../styles/CreateOrderForm.module.css';
 
-const CreateOrderView: React.FC = () => {
+interface OrderFormData {
+    id_order: string;
+    name_user: string;
+    date_request: string;
+    hour_request: string;
+    id_tech: string;
+    name_tech: string;
+    date_delivery: string;
+    code_equip: string;
+    name_equip: string;
+    brand_equip: string;
+    model_equip: string;
+    name_area: string;
+    name_class: string;
+    name_type: string;
+    priority: string;
+    work_requested: string;
+}
+
+const OrderReceivedView: React.FC = () => {
+    const { id } = useParams();
     const navigate = useNavigate();
-    const [form, setForm] = useState({
-        nroOrden: '',
-        fechaSolicitud: '',
-        horaSolicitud: '',
-        tecnico: '',
-        ficha: '',
-        emisor: '',
-        equipo: '',
-        modeloEquipo: '',
-        ubicacion: '',
-        area: '',
-        supervisor: '',
-        contactoSupervisor: '',
-        fechaInicio: '',
-        horaInicio: '',
-        prioridad: '',
-        claseMtto: '',
-        tipoMtto: '',
-        fechaFin: '',
-        horaFin: '',
-        descripcionOrden: '',
-        trabajoSolicitado: '',
-        causaFalla: '',
-        analisisFalla: '',
-        detalleTrabajo: '',
-        repuestos: '',
-        personalApoyo: '',
-        observaciones: '',
-    });
-    const [errors, setErrors] = useState<Record<string, boolean>>({});
+    const [form, setForm] = useState<OrderFormData | null>(null);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-    ) => {
-        const { name, value } = e.target;
-        setForm(f => ({ ...f, [name]: value }));
-        setErrors(err => ({ ...err, [name]: false }));
-    };
+    useEffect(() => {
+        axios.get(`http://localhost:3002/workOrders/${id}`)
+            .then((res) => {
+                setForm(res.data.data);
+            })
+            .catch((err) => console.error('Error al cargar la orden:', err));
 
-    const validate = () => {
-        const required = [
-            'nroOrden',
-            'fechaSolicitud',
-            'horaSolicitud',
-            'tecnico',
-            'nroOTA',
-            'equipo',
-            'area',
-            'supervisor',
-            'fechaInicio',
-            'horaInicio',
-            'descripcionOrden',
-            'trabajoSolicitado',
-            'causaFalla',
-            'analisisFalla',
-            'detalleTrabajo',
-            'repuestos',
-        ];
-        const newErr: Record<string, boolean> = {};
-        required.forEach(k => {
-            if (!form[k as keyof typeof form].trim()) newErr[k] = true;
-        });
-        setErrors(newErr);
-        return Object.keys(newErr).length === 0;
-    };
+    }, [id]);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!validate()) return;
-        console.log('Enviar orden:', form);
-        // navigate('/ordenes'); // por ejemplo
-    };
-    const handleCancel = () => navigate('/ordenes');
+    const handleCancel = () => navigate('/order/receivedList');
+
+    if (!form) return <p className={styles.loading}>Cargando...</p>;
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.title}>CREAR ORDEN</h1>
-            <form className={styles.form} onSubmit={handleSubmit}>
+            <h2 className={styles.title}>DETALLES ORDEN RECIBIDA</h2>
+            <div className={styles.form}>
                 {/* ==== Solicitud ==== */}
                 <section className={styles.section}>
-                    <h2 className={styles.sectionTitle}>Solicitud</h2>
+                    <h3 className={styles.sectionTitle}>Solicitud</h3>
                     <div className={styles.grid2}>
-                        <div className={styles.field}>
-                            <label>Nro Orden<span>*</span></label>
-                            <input name="nroOrden" value={form.nroOrden} onChange={handleChange} />
-                            {errors.nroOrden && <p className={styles.error}>Este campo es obligatorio</p>}
-                        </div>
-                        <div className={styles.field}>
-                            <label>Emisor<span>*</span></label>
-                            <input name="nroOTA" value={form.emisor} onChange={handleChange} />
-                            {errors.emisor && <p className={styles.error}>Este campo es obligatorio</p>}
-                        </div>
-
-                        <div className={styles.field}>
-                            <label>Fecha solicitud<span>*</span></label>
-                            <input type="date" name="fechaSolicitud" value={form.fechaSolicitud} onChange={handleChange} />
-                            {errors.fechaSolicitud && <p className={styles.error}>Este campo es obligatorio</p>}
-                        </div>
-
-                        <div className={styles.field}>
-                            <label>Hora solicitud<span>*</span></label>
-                            <input type="time" name="horaSolicitud" value={form.horaSolicitud} onChange={handleChange} />
-                            {errors.horaSolicitud && <p className={styles.error}>Este campo es obligatorio</p>}
-                        </div>
-                        <div className={styles.field}>
-                            <label>Equipo<span>*</span></label>
-                            <input name="equipo" value={form.equipo} onChange={handleChange} />
-                            {errors.equipo && <p className={styles.error}>Este campo es obligatorio</p>}
-                        </div>
-
-                        <div className={styles.field}>
-                            <label>Técnico<span>*</span></label>
-                            <input name="tecnico" value={form.tecnico} onChange={handleChange} />
-                            {errors.tecnico && <p className={styles.error}>Este campo es obligatorio</p>}
-                        </div>
-                        <div className={styles.field}>
-                            <label>Modelo</label>
-                            <input name="modeloEquipo" value={form.modeloEquipo} onChange={handleChange} />
-                        </div>
-
+                        <Field label="Nro Orden" value={form.id_order} />
+                        <Field label="Emisor" value={form.name_user} />
+                        <Field label="Técnico" value={`${form.id_tech} - ${form.name_tech}`} />
+                        <Field label="Fecha solicitud" value={form.date_request} />
+                        <Field label="Hora solicitud" value={form.hour_request} />
+                        <Field label="Fecha entrega" value={form.date_delivery} />
                     </div>
                 </section>
 
@@ -131,107 +61,50 @@ const CreateOrderView: React.FC = () => {
 
                 {/* ==== Orden de Trabajo ==== */}
                 <section className={styles.section}>
-                    <h2 className={styles.sectionTitle}>Orden de Trabajo</h2>
+                    <h3 className={styles.sectionTitle}>Orden de Trabajo</h3>
                     <div className={styles.grid2}>
-                        <div className={styles.field}>
-                            <label>Área<span>*</span></label>
-                            <input name="area" value={form.area} onChange={handleChange} />
-                            {errors.area && <p className={styles.error}>Este campo es obligatorio</p>}
+                        <Field label="Equipo" value={form.name_equip} />
+                        <Field label="Código" value={form.code_equip} />
+                        <Field label="Marca" value={form.brand_equip} />
+                        <Field label="Modelo" value={form.model_equip} />
+                        <Field label="Ubicación" value={form.name_area} />
+                        <Field label="Clase Mantenimiento" value={form.name_class} />
+                        <Field label="Tipo Mantenimiento" value={form.name_type} />
+                        <Field label="Prioridad" value={form.priority} />
+                        <div className={styles.fieldSpan3}>
+                            <label>Trabajo Solicitado</label>
+                            <p className={styles.readOnlyValue}>{form.work_requested}</p>
                         </div>
-                        <div className={styles.field}>
-                            <label>Prioridad</label>
-                            <input name="prioridad" value={form.prioridad} onChange={handleChange} />
-                        </div>
-
-                        <div className={styles.field}>
-                            <label>Supervisor<span>*</span></label>
-                            <input name="supervisor" value={form.supervisor} onChange={handleChange} />
-                            {errors.supervisor && <p className={styles.error}>Este campo es obligatorio</p>}
-                        </div>
-                        <div className={styles.field}>
-                            <label>Clase Mantenimiento</label>
-                            <input name="claseMtto" value={form.claseMtto} onChange={handleChange} />
-                        </div>
-
-                        <div className={styles.field}>
-                            <label>Contacto Supervisor</label>
-                            <input name="contactoSupervisor" value={form.contactoSupervisor} onChange={handleChange} />
-                        </div>
-                        <div className={styles.field}>
-                            <label>Tipo Mantenimiento</label>
-                            <input name="tipoMtto" value={form.tipoMtto} onChange={handleChange} />
-                        </div>
-
-                        <div className={styles.field}>
-                            <label>Fecha inicio<span>*</span></label>
-                            <input type="date" name="fechaInicio" value={form.fechaInicio} onChange={handleChange} />
-                            {errors.fechaInicio && <p className={styles.error}>Este campo es obligatorio</p>}
-                        </div>
-                        <div className={styles.field}>
-                            <label>Fecha fin</label>
-                            <input type="date" name="fechaFin" value={form.fechaFin} onChange={handleChange} />
-                        </div>
-
-                        <div className={styles.field}>
-                            <label>Hora inicio<span>*</span></label>
-                            <input type="time" name="horaInicio" value={form.horaInicio} onChange={handleChange} />
-                            {errors.horaInicio && <p className={styles.error}>Este campo es obligatorio</p>}
-                        </div>
-                        <div className={styles.field}>
-                            <label>Hora fin</label>
-                            <input type="time" name="horaFin" value={form.horaFin} onChange={handleChange} />
-                        </div>
-
-                        <div className={styles.fieldFull}>
-                            <label>Descripción Orden Trabajo<span>*</span></label>
-                            <textarea
-                                name="descripcionOrden"
-                                value={form.descripcionOrden}
-                                onChange={handleChange}
-                                rows={3}
-                            />
-                            {errors.descripcionOrden && <p className={styles.error}>Este campo es obligatorio</p>}
-                        </div>
-                    </div>
-                </section>
-
-                <hr className={styles.divider} />
-
-                {/* ==== Trabajo Realizado ==== */}
-                <section className={styles.section}>
-                    <h2 className={styles.sectionTitle}>Trabajo Realizado</h2>
-                    <div className={styles.gridFull}>
-                        {['trabajoSolicitado','causaFalla','analisisFalla','detalleTrabajo','repuestos','personalApoyo','observaciones'].map((key) => (
-                            <div key={key} className={styles.fieldFull}>
-                                <label>
-                                    {key === 'trabajoSolicitado' ? 'Trabajo solicitado*' :
-                                        key === 'causaFalla'       ? 'Causa de la falla*' :
-                                            key === 'analisisFalla'    ? 'Análisis de la falla*' :
-                                                key === 'detalleTrabajo'   ? 'Detalle trabajo realizado*' :
-                                                    key === 'repuestos'        ? 'Repuestos utilizados*' :
-                                                        key === 'personalApoyo'    ? 'Personal de apoyo' :
-                                                            'Observaciones'}
-                                    {['trabajoSolicitado','causaFalla','analisisFalla','detalleTrabajo','repuestos'].includes(key) && <span>*</span>}
-                                </label>
-                                <textarea
-                                    name={key}
-                                    value={form[key as keyof typeof form]}
-                                    onChange={handleChange}
-                                    rows={2}
-                                />
-                                {errors[key] && <p className={styles.error}>Este campo es obligatorio</p>}
-                            </div>
-                        ))}
                     </div>
                 </section>
 
                 <div className={styles.buttonGroup}>
-                    <button type="submit" className={styles.saveButton}>GUARDAR</button>
-                    <button type="button" className={styles.cancelButton} onClick={handleCancel}>CANCELAR</button>
+
+                    <button type="button"
+                            className={styles.cancelButton}
+                            onClick={handleCancel}
+                    >
+                        ATRÁS
+                    </button>
+
+                    <button type="submit"
+                            className={styles.saveButton}
+                            onClick={() => navigate(`/order/execute/${form.id_order}`)}
+                    >
+                        EJECUTAR
+                    </button>
+
                 </div>
-            </form>
+            </div>
         </div>
     );
 };
 
-export default CreateOrderView;
+const Field = ({ label, value, full = false, className = '' }: { label: string; value: string; full?: boolean; className?: string }) => (
+    <div className={`${full ? styles.fieldFull : styles.field} ${className}`}>
+        <label>{label}</label>
+        <p className={styles.readOnlyValue}>{value}</p>
+    </div>
+);
+
+export default OrderReceivedView;
