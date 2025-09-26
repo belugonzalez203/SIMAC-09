@@ -2,6 +2,7 @@ import styles from '../../styles/ListView.module.css';
 import EditTypeChangeModal from "./EditTypeModal";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
+import ConfirmModal from "../../components/ConfirmModal";
 import axios from 'axios';
 
 interface TypeChange {
@@ -16,6 +17,9 @@ function TypeChangeMaintenanceView() {
     const [searchName, setSearchName] = useState('');
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedType, setSelectedType] = useState<TypeChange | null>(null);
+
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [typeToDelete, setTypeToDelete] = useState<number | null>(null);
 
     const fetchTypes = () => {
         axios.get('http://localhost:3002/typeChangeMaintenance')
@@ -42,12 +46,24 @@ function TypeChangeMaintenanceView() {
         setFilteredTypes(filtered);
     }, [searchName, types]);
 
-    const handleDelete = (id: number) => {
-        if (!window.confirm('¿Eliminar tipo de cambio?')) return;
+    const handleDeleteClick = (id: number) => {
+        setTypeToDelete(id);
+        setShowConfirm(true);
+    };
 
-        axios.delete(`http://localhost:3002/typeChangeMaintenance/${id}`)
-            .then(() => fetchTypes())
-            //.catch(err => alert('Error al eliminar'));
+    const confirmDelete = () => {
+        if (typeToDelete !== null) {
+            axios.delete(`http://localhost:3002/typeChangeMaintenance/${typeToDelete}`)
+                .then(() => fetchTypes())
+                .catch(err => console.error("Error al eliminar:", err));
+        }
+        setShowConfirm(false);
+        setTypeToDelete(null);
+    };
+
+    const cancelDelete = () => {
+        setShowConfirm(false);
+        setTypeToDelete(null);
     };
 
     const openEditModal = (type: TypeChange) => {
@@ -93,7 +109,10 @@ function TypeChangeMaintenanceView() {
                                 <FaEdit className={styles.editIcon} onClick={() => openEditModal(t)} />
                             </td>
                             <td className={styles.iconCell}>
-                                <FaTrashAlt className={styles.deleteIcon} onClick={() => handleDelete(t.id_type_change)} />
+                                <FaTrashAlt
+                                    className={styles.deleteIcon}
+                                    onClick={() => handleDeleteClick(t.id_type_change)}
+                                />
                             </td>
                         </tr>
                     ))}
@@ -109,6 +128,15 @@ function TypeChangeMaintenanceView() {
                     onConfirm={handleConfirmEdit}
                 />
             )}
+
+            {/* Modal de confirmación */}
+            <ConfirmModal
+                isOpen={showConfirm}
+                title="Eliminar tipo de cambio"
+                message="¿Estás seguro que deseas eliminar este tipo de cambio?"
+                onConfirm={confirmDelete}
+                onCancel={cancelDelete}
+            />
         </div>
     );
 }

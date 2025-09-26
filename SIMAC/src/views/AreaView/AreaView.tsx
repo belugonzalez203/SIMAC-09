@@ -1,5 +1,6 @@
 import styles from '../../styles/ListView.module.css';
 import EditAreaModal from "./EditAreaModal";
+import ConfirmModal from "../../components/ConfirmModal";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -19,20 +20,32 @@ function AreaView() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedArea, setSelectedArea] = useState<Area | null>(null);
 
-    const handleDelete = (id: string) => {
-        if (!window.confirm('¿Estás seguro de que deseas eliminar esta área?')) return;
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [areaToDelete, setAreaToDelete] = useState<string | null>(null);
 
-            axios.delete(`http://localhost:3002/area/${id}`)
-                 .then(() => {
-                        setAreas(prev => prev.filter(area => area.id_area !== id));
-                        console.log(`Área ${id} eliminada correctamente`);
-                    })
-                 .catch(error => {
-                        console.error(`Error eliminando el área ${id}:`, error);
-                        alert('Hubo un error al eliminar el área');
-                 });
-            fetchAreas();
-        };
+    const handleDeleteClick = (id: string) => {
+        setAreaToDelete(id);
+        setIsConfirmOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (!areaToDelete) return;
+
+        axios.delete(`http://localhost:3002/area/${areaToDelete}`)
+            .then(() => {
+                setAreas(prev => prev.filter(area => area.id_area !== areaToDelete));
+                console.log(`Área ${areaToDelete} eliminada correctamente`);
+            })
+            .catch(error => {
+                console.error(`Error eliminando el área ${areaToDelete}:`, error);
+                alert('Hubo un error al eliminar el área');
+            })
+            .finally(() => {
+                setIsConfirmOpen(false);
+                setAreaToDelete(null);
+                fetchAreas();
+            });
+    };
 
     useEffect(() => {
         fetchAreas();
@@ -115,7 +128,7 @@ function AreaView() {
                                         <td className={styles.iconCell}>
                                             <FaTrashAlt
                                                 className={styles.deleteIcon}
-                                                onClick={() => handleDelete(area.id_area)}
+                                                onClick={() => handleDeleteClick(area.id_area)}
                                                 style={{ cursor: 'pointer' }}
                                             />
                                         </td>
@@ -134,6 +147,14 @@ function AreaView() {
                     onConfirm={handleConfirmEdit}
                 />
             )}
+
+            {/* Modal de confirmación */}
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                message="¿Estás seguro de que deseas eliminar esta área?"
+                onConfirm={confirmDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+            />
         </div>
 
     );

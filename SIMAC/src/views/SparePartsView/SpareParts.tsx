@@ -1,5 +1,6 @@
 import styles from '../../styles/ListView.module.css';
 import EditSparePartsModal from "./EditSparePartsModal";
+import ConfirmModal from "../../components/ConfirmModal";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -22,6 +23,9 @@ function SparePartsView() {
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedSparePart, setSelectedSparePart] = useState<SparePart | null>(null);
+
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [sparePartToDelete, setSparePartToDelete] = useState<string | null>(null);
 
     const handleEditClick = (sp: SparePart) => {
         setSelectedSparePart(sp);
@@ -56,17 +60,26 @@ function SparePartsView() {
         fetchData();
     };
 
-    const handleDelete = (id: string) => {
-        if (!window.confirm('¿Estás seguro de que deseas eliminar este repuesto?')) return;
+    const handleDeleteClick = (id: string) => {
+        setSparePartToDelete(id);
+        setIsConfirmOpen(true);
+    };
 
-        axios.delete(`http://localhost:3002/sparePart/${id}`)
+    const confirmDelete = () => {
+        if (!sparePartToDelete) return;
+
+        axios.delete(`http://localhost:3002/sparePart/${sparePartToDelete}`)
             .then(() => {
-                setSpareParts(prev => prev.filter(sp => sp.id_spare_part !== id));
-                console.log(`Repuesto ${id} eliminado correctamente`);
+                setSpareParts(prev => prev.filter(sp => sp.id_spare_part !== sparePartToDelete));
+                console.log(`Repuesto ${sparePartToDelete} eliminado correctamente`);
             })
             .catch(error => {
-                console.error(`Error eliminando el repuesto ${id}:`, error);
+                console.error(`Error eliminando el repuesto ${sparePartToDelete}:`, error);
                 alert('Hubo un error al eliminar el repuesto');
+            })
+            .finally(() => {
+                setIsConfirmOpen(false);
+                setSparePartToDelete(null);
             });
     };
 
@@ -138,7 +151,7 @@ function SparePartsView() {
                             <td className={styles.iconCell}>
                                 <FaTrashAlt
                                     className={styles.deleteIcon}
-                                    onClick={() => handleDelete(sp.id_spare_part)}
+                                    onClick={() => handleDeleteClick(sp.id_spare_part)}
                                     style={{ cursor: 'pointer' }}
                                 />
                             </td>
@@ -155,6 +168,13 @@ function SparePartsView() {
                     fetchSpareParts();
                     setIsEditModalOpen(false);
                 }}
+            />
+
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                message="¿Estás seguro de que deseas eliminar este repuesto?"
+                onConfirm={confirmDelete}
+                onCancel={() => setIsConfirmOpen(false)}
             />
 
         </div>

@@ -1,5 +1,6 @@
 import styles from '../../styles/ListView.module.css';
 import EditEquipmentModal from "./EditEquipmentModal";
+import ConfirmModal from "../../components/ConfirmModal";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -42,6 +43,9 @@ function EquipmentListView () {
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [selectedEquipment, setSelectedEquipment] = useState<EquipmentFormData | null>(null);
 
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [equipmentToDelete, setEquipmentToDelete] = useState<number | null>(null);
+
     const fetchEquipments = () => {
         axios.get('http://localhost:3002/equipment/')
             .then(response => {
@@ -54,19 +58,27 @@ function EquipmentListView () {
             });
     };
 
+    const handleDeleteClick = (id: number) => {
+        setEquipmentToDelete(id);
+        setIsConfirmOpen(true);
+    };
 
-    const handleDelete = (id: number) => {
-        if (!window.confirm('¿Estás seguro de que deseas eliminar este equipo?')) return;
-        axios.delete(`http://localhost:3002/equipment/${id}`)
+    const confirmDelete = () => {
+        if (!equipmentToDelete) return;
+        axios.delete(`http://localhost:3002/equipment/${equipmentToDelete}`)
             .then(() => {
-                setEquipments(prev => prev.filter(equip => equip.id_equip !== id));
-                console.log(`Equipo ${id} eliminado correctamente`);
+                setEquipments(prev => prev.filter(equip => equip.id_equip !== equipmentToDelete));
+                console.log(`Equipo ${equipmentToDelete} eliminado correctamente`);
             })
             .catch(error => {
-                console.error(`Error eliminando el Equipo ${id}:`, error);
+                console.error(`Error eliminando el Equipo ${equipmentToDelete}:`, error);
                 alert('Hubo un error al eliminar el Equipo');
+            })
+            .finally(() => {
+                setIsConfirmOpen(false);
+                setEquipmentToDelete(null);
+                fetchEquipments();
             });
-        fetchEquipments();
     };
 
     useEffect(() => {
@@ -161,7 +173,7 @@ function EquipmentListView () {
                                 <td className={styles.iconCell}>
                                     <FaTrashAlt
                                         className={styles.deleteIcon}
-                                        onClick={() => handleDelete(equip.id_equip)}
+                                        onClick={() => handleDeleteClick(equip.id_equip)}
                                         style={{ cursor: 'pointer' }}
                                     />
                                 </td>
@@ -203,6 +215,14 @@ function EquipmentListView () {
 
             />
         )}
+
+            {/* ConfirmModal para eliminar */}
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                message="¿Estás seguro de que deseas eliminar este equipo?"
+                onConfirm={confirmDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+            />
         </>
     );
 }

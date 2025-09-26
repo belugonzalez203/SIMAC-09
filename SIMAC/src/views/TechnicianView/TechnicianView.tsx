@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import CreateTechnicianModal from './CreateTechnicianModal';
 import EditTechnicianModal from './EditTechnicianModal';
+import ConfirmModal from "../../components/ConfirmModal";
 
 interface Technician {
     id_tech: string;
@@ -22,6 +23,9 @@ function TechnicianView() {
     const [isCreateModalOpen, setisCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedTechnician, setSelectedTechnician] = useState<Technician | null>(null);
+
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [technicianToDelete, setTechnicianToDelete] = useState<string | null>(null);
 
     useEffect(() => {
         fetchTechnicians();
@@ -47,35 +51,44 @@ function TechnicianView() {
         setFilteredTechnicians(filtered);
     }, [searchCode, searchName, searchArea, technicians]);
 
-    const handleDelete = (id: string) => {
-        if (!window.confirm('¿Deseas eliminar este técnico?')) return;
+    const handleDeleteClick = (id: string) => {
+        setTechnicianToDelete(id);
+        setIsConfirmOpen(true);
+    };
 
-            axios.delete(`http://localhost:3002/technician/${id}`)
-                .then(() => {
-                    setTechnicians(prev => prev.filter(t => t.id_tech !== id));
-                    console.log(`Técnico ${id} eliminado correctamente`);
-                })
-                .catch(err => {
-                    console.error(`Error al eliminar técnico ${id}:`, err);
-                    alert('Hubo un error al eliminar el técnico');
-                });
-            fetchTechnicians();
-        };
+    const confirmDelete = () => {
+        if (!technicianToDelete) return;
 
-        const handleOpenEdit = (technician: Technician) => {
-            setSelectedTechnician(technician);
-            setIsEditModalOpen(true);
-        };
+        axios.delete(`http://localhost:3002/technician/${technicianToDelete}`)
+            .then(() => {
+                setTechnicians(prev => prev.filter(t => t.id_tech !== technicianToDelete));
+                console.log(`Técnico ${technicianToDelete} eliminado correctamente`);
+            })
+            .catch(err => {
+                console.error(`Error al eliminar técnico ${technicianToDelete}:`, err);
+                alert('Hubo un error al eliminar el técnico');
+            })
+            .finally(() => {
+                setIsConfirmOpen(false);
+                setTechnicianToDelete(null);
+                fetchTechnicians();
+            });
+    };
 
-        const handleConfirmCreate = () => {
-            setisCreateModalOpen(false);
-            fetchTechnicians();
-        };
+    const handleOpenEdit = (technician: Technician) => {
+        setSelectedTechnician(technician);
+        setIsEditModalOpen(true);
+    };
 
-        const handleConfirmEdit = () => {
-            setIsEditModalOpen(false);
-            fetchTechnicians();
-        };
+    const handleConfirmCreate = () => {
+        setisCreateModalOpen(false);
+        fetchTechnicians();
+    };
+
+    const handleConfirmEdit = () => {
+        setIsEditModalOpen(false);
+        fetchTechnicians();
+    };
 
     return (
         <div className={styles.container}>
@@ -132,7 +145,7 @@ function TechnicianView() {
                             <td className={styles.iconCell}>
                                 <FaTrashAlt
                                     className={styles.deleteIcon}
-                                    onClick={() => handleDelete(tech.id_tech)}
+                                    onClick={() => handleDeleteClick(tech.id_tech)}
                                     style={{ cursor: 'pointer' }}
                                 />
                             </td>
@@ -156,6 +169,13 @@ function TechnicianView() {
                     technician={selectedTechnician}
                 />
             )}
+
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                message="¿Deseas eliminar este técnico?"
+                onConfirm={confirmDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+            />
         </div>
     );
 }

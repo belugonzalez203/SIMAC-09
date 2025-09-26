@@ -23,6 +23,18 @@
     height: 80%;
 }
 
+.modalConfirm {
+    background: white;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease;
+    height: 35%;
+}
+
 .title {
     text-align: center;
     margin-bottom: 1rem;

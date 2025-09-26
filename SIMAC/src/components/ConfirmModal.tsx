@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../styles/Modal.module.css";
+import styles from "../styles/Modal.module.css";
 
 interface ConfirmModalProps {
     isOpen: boolean;
@@ -20,7 +20,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
     return (
         <div className={styles.overlay}>
-            <div className={styles.modal}>
+            <div className={styles.modalConfirm}>
                 <h3 className={styles.title}>{title}</h3>
                 <p style={{ textAlign: "center", marginBottom: "1.5rem" }}>{message}</p>
 
