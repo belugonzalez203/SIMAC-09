@@ -14,7 +14,38 @@
   "devDependencies": {
     "concurrently": "^8.0.0",
     "cross-env": "^7.0.0",
-    "electron": "^26.0.0",
+    "electron": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.simac.electron",
+    "productName": "SIMAC",
+    "directories": {
+      "output": "dist_electron",
+      "buildResources": "assets"
+    },
+    "files": [
+      "**/*",
+      "SIMAC/dist/**/*",
+      "backend/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "backend/src/config/siac.sqlite",
+        "to": "siac.sqlite"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "dependencies": {
     "wait-on": "^9.0.1"
   }
 }

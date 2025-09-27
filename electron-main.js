@@ -63,7 +63,7 @@ function createWindow() {
         win.loadURL(FRONTEND_DEV_URL);
         win.webContents.openDevTools();
     } else {
-        win.loadFile(path.join(__dirname, 'SIMAC', 'dist', 'index.html'));
+        win.loadFile(path.join(__dirname, 'dist', 'index.html'));
     }
 }
 
@@ -72,7 +72,7 @@ app.whenReady().then(async () => {
 
     if (isDev) {
         try {
-            await waitOn({ resources: [FRONTEND_DEV_URL], timeout: 15000 });
+            await waitOn({ resources: [FRONTEND_DEV_URL], timeout: 300000 });
         } catch (err) {
             console.warn('Frontend dev server no respondió a tiempo, seguimos de todas formas.');
         }

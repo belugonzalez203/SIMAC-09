@@ -54,7 +54,7 @@ const Sidebar = () => {
                             className={`${styles.iconButton}`}
                             onClick={() => setActiveModal("order")}
                             title="Crear nueva orden"
-                        >   <img src="/add.png" alt="addNew" className={styles.img} />
+                        >   <img src="./add.png" alt="addNew" className={styles.img} />
                         </button>
                     </li>
                     <li className={styles.combinedItem}>
