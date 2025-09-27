@@ -73,7 +73,7 @@ const OrderToPrinted = React.forwardRef<HTMLDivElement, Props>(({ onReady }, ref
     return (
         <div className={styles.printContainer} ref={ref}>
             <div className={styles.marca}>
-                <img src="/LogoCoboce.png" alt="Coboce Ltda." className={styles.logo} />
+                <img src="./LogoCoboce.png" alt="Coboce Ltda." className={styles.logo} />
                 <div>
                     <h2 className={styles.title}>ORDEN DE TRABAJO</h2>
                     <h3 className={styles.title}>MANTENIMIENTO INTERNO</h3>

@@ -89,7 +89,7 @@ const Sidebar = () => {
                         <button
                             className={`${styles.subLink} ${styles.buttonLink}`}
                             onClick={() => setActiveModal("equipment")}
-                        >   <img src="/add.png" alt="addNew" className={styles.img} />
+                        >   <img src="./add.png" alt="addNew" className={styles.img} />
                         </button>
                     </li>
                     <li className={styles.combinedItem}>
@@ -104,7 +104,7 @@ const Sidebar = () => {
                         <button
                             className={`${styles.subLink} ${styles.buttonLink}`}
                             onClick={() => setActiveModal("spareParts")}
-                        >   <img src="/add.png" alt="addNew" className={styles.img} />
+                        >   <img src="./add.png" alt="addNew" className={styles.img} />
                         </button>
                     </li>
                     <li className={styles.combinedItem}>
@@ -119,7 +119,7 @@ const Sidebar = () => {
                         <button
                             className={`${styles.subLink} ${styles.buttonLink}`}
                             onClick={() => setActiveModal("area")}
-                        >   <img src="/add.png" alt="addNew" className={styles.img} />
+                        >   <img src="./add.png" alt="addNew" className={styles.img} />
                         </button>
                     </li>
                     <li className={styles.combinedItem}>
@@ -134,7 +134,7 @@ const Sidebar = () => {
                         <button
                             className={`${styles.subLink} ${styles.buttonLink}`}
                             onClick={() => setActiveModal("technicians")}
-                        >   <img src="/add.png" alt="addNew" className={styles.img} />
+                        >   <img src="./add.png" alt="addNew" className={styles.img} />
                         </button>
                     </li>
                     <li className={styles.combinedItem}>
@@ -149,7 +149,7 @@ const Sidebar = () => {
                         <button
                             className={`${styles.subLink} ${styles.buttonLink}`}
                             onClick={() => setActiveModal("typeMaintenance")}
-                        >   <img src="/add.png" alt="addNew" className={styles.img} />
+                        >   <img src="./add.png" alt="addNew" className={styles.img} />
                         </button>
                     </li>
                 </ul>

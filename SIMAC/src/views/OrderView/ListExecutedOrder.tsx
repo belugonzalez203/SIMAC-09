@@ -114,7 +114,7 @@ const ExecutedOrderList: React.FC = () => {
                                     className={`${styles.subLink} ${styles.buttonLink}`}
                                     onClick={() => navigate(`/order/executed/${order.id_order}`)}
                                 >
-                                    <img src="/seeMore.png" alt="seeMore" className={styles.img} />
+                                    <img src="./seeMore.png" alt="seeMore" className={styles.img} />
                                 </button>
                             </td>
                             <td className={styles.iconCell}>
@@ -122,7 +122,7 @@ const ExecutedOrderList: React.FC = () => {
                                     className={styles.buttonLink}
                                     onClick={() => navigate(`/order/print/${order.id_order}`)}
                                 >
-                                    <img src="/print.png" alt="printOrder" className={styles.img} />
+                                    <img src="./print.png" alt="printOrder" className={styles.img} />
                                 </button>
                             </td>
                         </tr>

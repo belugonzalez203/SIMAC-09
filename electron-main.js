@@ -52,6 +52,7 @@ function createWindow() {
     const win = new BrowserWindow({
         width: 1200,
         height: 800,
+        icon: path.join(__dirname, 'assets', 'icon.ico'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
@@ -65,6 +66,10 @@ function createWindow() {
     } else {
         win.loadFile(path.join(__dirname, 'dist', 'index.html'));
     }
+
+    win.webContents.on('did-finish-load', () => {
+        win.webContents.setZoomFactor(0.8);
+    });
 }
 
 app.whenReady().then(async () => {
