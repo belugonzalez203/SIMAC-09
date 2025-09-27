@@ -3,7 +3,8 @@ import EditAreaModal from "./EditAreaModal";
 import ConfirmModal from "../../components/ConfirmModal";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from "../../services/api";
+
 
 interface Area {
     id_area: string;
@@ -31,7 +32,7 @@ function AreaView() {
     const confirmDelete = () => {
         if (!areaToDelete) return;
 
-        axios.delete(`http://localhost:3002/area/${areaToDelete}`)
+        api.delete(`/area/${areaToDelete}`)
             .then(() => {
                 setAreas(prev => prev.filter(area => area.id_area !== areaToDelete));
                 console.log(`Área ${areaToDelete} eliminada correctamente`);
@@ -52,7 +53,7 @@ function AreaView() {
     }, []);
 
     const fetchAreas = () => {
-        axios.get('http://localhost:3002/area/')
+        api.get('/area/')
             .then(response => {
                 console.log('Datos recibidos del backend:', response.data.data);
                 setAreas(response.data.data);

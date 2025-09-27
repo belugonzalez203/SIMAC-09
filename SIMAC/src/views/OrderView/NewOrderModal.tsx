@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../styles/Modal.module.css';
-import axios from 'axios';
 import { CustomSelect } from '../../components/CustomSelect';
+import api from "../../services/api";
 
 type NewOrderData = {
     tecnico: string;
@@ -90,10 +90,10 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
             };
 
             try {
-                const response = await axios.post('http://localhost:3002/workOrders/post', payload);
+                const response = await api.post('/workOrders/post', payload);
                 console.log('Respuesta del servidor:', response.data);
 
-                await axios.put(`http://localhost:3002/equipment/updateService/${formData.equipo}`, { id_service: 2 });
+                await api.put(`/equipment/updateService/${formData.equipo}`, { id_service: 2 });
 
                 onConfirm(formData);
                 onClose();
@@ -105,7 +105,7 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
 
     useEffect(() => {
         if (isOpen) {
-            axios.get('http://localhost:3002/technician/')
+            api.get('/technician/')
                 .then(res => setTecnicoOptions(
                     res.data.data.map((t: any) => ({
                         value: t.id_tech,
@@ -114,7 +114,7 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
                 ))
                 .catch(err => console.error('Error al cargar técnicos:', err));
 
-            axios.get('http://localhost:3002/equipment/')
+            api.get('/equipment/')
                 .then(res => setEquipoOptions(
                     res.data.data.map((e: any) => ({
                         value: String(e.id_equip),
@@ -123,7 +123,7 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
                 ))
                 .catch(err => console.error('Error al cargar equipos:', err));
 
-            axios.get('http://localhost:3002/maintenance/class')
+            api.get('/maintenance/class')
                 .then(res => setClaseOptions(
                     res.data.data.map((c: any) => ({
                         value: String(c.id_class),
@@ -132,7 +132,7 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
                 ))
                 .catch(err => console.error('Error al cargar clases de mantenimiento:', err));
 
-            axios.get('http://localhost:3002/maintenance/type')
+            api.get('/maintenance/type')
                 .then(res => setTipoOptions(
                     res.data.data.map((t: any) => ({
                         value: String(t.id_type),

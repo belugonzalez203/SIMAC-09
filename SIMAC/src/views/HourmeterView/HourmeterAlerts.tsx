@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import styles from '../../styles/ListView.module.css';
+import api from "../../services/api";
 
 interface AlertHourmeter {
     id_equip: number;
@@ -18,7 +18,7 @@ const HourmeterAlerts: React.FC = () => {
     const [alerts, setAlerts] = useState<AlertHourmeter[]>([]);
 
     useEffect(() => {
-        axios.get('http://localhost:3002/hourmeters/alerts')
+        api.get('/hourmeters/alerts')
             .then(res => setAlerts(res.data.data))
             .catch(err => console.error('Error al cargar alertas:', err));
     }, []);

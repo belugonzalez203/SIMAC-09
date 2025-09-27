@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../../styles/Modal.module.css';
-import axios from 'axios';
+import api from "../../services/api";
+
 
 interface Area {
     id_area: string;
@@ -47,7 +48,7 @@ const EditAreaModal: React.FC<Props> = ({ isOpen, onClose, area, onConfirm }) =>
         if (!validate()) return;
 
         try {
-            await axios.put(`http://localhost:3002/area/${formData.id_area}`, {
+            await api.put(`/area/${formData.id_area}`, {
                 name_area: formData.name_area,
                 in_charge: formData.in_charge,
                 contact_number_area: formData.contact_number_area,

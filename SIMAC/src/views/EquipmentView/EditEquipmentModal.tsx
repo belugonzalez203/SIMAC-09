@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import styles from '../../styles/Modal.module.css';
 import { CustomSelect } from '../../components/CustomSelect';
+import api from "../../services/api";
 
 type EquipmentFormData = {
     id_equip: number;
@@ -55,8 +55,8 @@ const EditEquipmentModal: React.FC<Props> = ({ isOpen, onClose, equipment, onCon
             const fetchOptions = async () => {
                 try {
                     const [areaRes, serviceRes] = await Promise.all([
-                        axios.get('http://localhost:3002/area/'),
-                        axios.get('http://localhost:3002/serviceStatusEquipment/')
+                        await api.get('/area/'),
+                        await api.get('/serviceStatusEquipment/')
                     ]);
 
                     const areaOptions = areaRes.data.data.map((a: any) => ({
@@ -145,7 +145,7 @@ const EditEquipmentModal: React.FC<Props> = ({ isOpen, onClose, equipment, onCon
 
         try {
             console.log('Payload a enviar:', payload);
-            const response = await axios.put(`http://localhost:3002/equipment/${formData.id_equip}`, payload);
+            const response = await api.put(`/equipment/${formData.id_equip}`, payload);
             console.log('Equipo actualizado:', response.data);
             onConfirm(formData);
             onClose();

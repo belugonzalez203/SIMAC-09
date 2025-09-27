@@ -1,10 +1,11 @@
 import styles from '../../styles/ListView.module.css';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import CreateTechnicianModal from './CreateTechnicianModal';
 import EditTechnicianModal from './EditTechnicianModal';
 import ConfirmModal from "../../components/ConfirmModal";
+import api from "../../services/api";
+
 
 interface Technician {
     id_tech: string;
@@ -32,7 +33,7 @@ function TechnicianView() {
     }, []);
 
     const fetchTechnicians = () => {
-        axios.get('http://localhost:3002/technician/')
+        api.get('/technician/')
             .then(res => {
                 setTechnicians(res.data.data);
                 setFilteredTechnicians(res.data.data);
@@ -59,7 +60,7 @@ function TechnicianView() {
     const confirmDelete = () => {
         if (!technicianToDelete) return;
 
-        axios.delete(`http://localhost:3002/technician/${technicianToDelete}`)
+        api.delete(`/technician/${technicianToDelete}`)
             .then(() => {
                 setTechnicians(prev => prev.filter(t => t.id_tech !== technicianToDelete));
                 console.log(`Técnico ${technicianToDelete} eliminado correctamente`);

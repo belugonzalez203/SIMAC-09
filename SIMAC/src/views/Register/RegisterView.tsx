@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../styles/AuthForm.module.css';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
+import api from "../../services/api";
 
 const RegisterView = () => {
     const [name, setName] = useState('');
@@ -36,7 +36,7 @@ const RegisterView = () => {
         }
 
         try {
-            await axios.post('http://localhost:3002/user/register', {
+            await api.post('/user/register', {
                 user: idUser,
                 name_user: name,
                 password,

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import {useNavigate, useParams} from 'react-router-dom';
 import styles from '../../styles/Print.module.css';
+import api from "../../services/api";
+
 
 interface OrderFormData {
     id_order: string;
@@ -48,17 +49,17 @@ const ExecutedOrderDetails: React.FC = () => {
     const [spareParts, setSpareParts] = useState<SparePartUsed[]>([]);
 
     useEffect(() => {
-        axios.get(`http://localhost:3002/workOrders/${id}`)
+        api.get(`/workOrders/${id}`)
             .then((res) => {
                 setForm(res.data.data);
             })
             .catch((err) => console.error('Error al cargar la orden:', err));
 
-        axios.get(`http://localhost:3002/workOrderTechnicians/techniciansByOrder/${id}`)
+        api.get(`/workOrderTechnicians/techniciansByOrder/${id}`)
             .then((res) => setTechnicians(res.data.data))
             .catch((err) => console.error('Error al cargar técnicos de apoyo:', err));
 
-        axios.get(`http://localhost:3002/workOrderSpareParts/sparePartsByOrder/${id}`)
+        api.get(`/workOrderSpareParts/sparePartsByOrder/${id}`)
             .then((res) => setSpareParts(res.data.data))
             .catch((err) => console.error('Error al cargar repuestos:', err));
     }, [id]);

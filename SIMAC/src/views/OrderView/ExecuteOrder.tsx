@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
 import ReactSelect from 'react-select';
 import styles from '../../styles/CreateOrderForm.module.css';
+import api from "../../services/api";
+
 
 interface OrderFormData {
     id_order: string;
@@ -56,7 +57,7 @@ const ExecuteOrderView: React.FC = () => {
 
 
     useEffect(() => {
-        axios.get(`http://localhost:3002/workOrders/${id}`)
+        api.get(`/workOrders/${id}`)
             .then(res => {
                 const data = res.data.data;
                 setForm({
@@ -70,13 +71,13 @@ const ExecuteOrderView: React.FC = () => {
             .catch(err => console.error('Error al cargar la orden:', err));
 
 
-        axios.get('http://localhost:3002/technician/')
+        api.get('/technician/')
             .then(res => setTechniciansOptions(
                 res.data.data.map((t: any) => ({ value: t.id_tech, label: t.name_tech }))
             ))
             .catch(err => console.error('Error cargando técnicos:', err));
 
-        axios.get('http://localhost:3002/sparePart/')
+        api.get('/sparePart/')
             .then(res => {
                 console.log("Repuestos cargados desde backend:", res.data.data);
                 const mapped = res.data.data.map((s: any) => {
@@ -119,7 +120,7 @@ const ExecuteOrderView: React.FC = () => {
 
         try {
 
-            await axios.put(`http://localhost:3002/workOrders/${id}`, {
+            await api.put(`/workOrders/${id}`, {
                 observations: form.observations,
                 work_performed_details: form.work_performed_details,
                 failure_analysis: form.failure_analysis,
@@ -129,7 +130,7 @@ const ExecuteOrderView: React.FC = () => {
             console.log("Technicians to assign:", selectedTechnicians.map(t => t.value));
             // técnicos de apoyo
             if (selectedTechnicians.length > 0) {
-                await axios.post(`http://localhost:3002/workOrders/${id}/technicians`, {
+                await api.post(`/workOrders/${id}/technicians`, {
                     technicians: selectedTechnicians.map(t => t.value)
                 });
             }
@@ -150,7 +151,7 @@ const ExecuteOrderView: React.FC = () => {
                 console.log("Repuestos que se van a enviar al backend:", sparePartsPayload);
 
                 if (sparePartsPayload.length > 0 && sparePartsPayload.every(p => p.id_spare_part)) {
-                    await axios.post(`http://localhost:3002/workOrders/${id}/spareParts`, {
+                    await api.post(`/workOrders/${id}/spareParts`, {
                         spareParts: sparePartsPayload
                     });
                 } else {

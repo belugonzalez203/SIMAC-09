@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../../styles/Modal.module.css';
-import axios from 'axios';
+import api from "../../services/api";
 
 interface TypeChange {
     id_type_change: number;
@@ -42,7 +42,7 @@ const EditTypeChangeModal: React.FC<Props> = ({ isOpen, onClose, typeChange, onC
         if (!validate()) return;
 
         try {
-            await axios.put(`http://localhost:3002/typeChangeMaintenance/${formData.id_type_change}`, formData);
+            await api.put(`/typeChangeMaintenance/${formData.id_type_change}`, formData);
             onConfirm();
             onClose();
         } catch (err) {

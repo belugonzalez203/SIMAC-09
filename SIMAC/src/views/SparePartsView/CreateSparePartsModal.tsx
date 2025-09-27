@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../styles/Modal.module.css';
-import axios from 'axios';
+import api from "../../services/api";
 import ReactSelect from 'react-select';
 
 type SparePartFormData = {
@@ -39,7 +39,7 @@ const CreateSparePartsModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) 
     const [selectedEquips, setSelectedEquips] = useState<EquipOption[]>([]);
 
     useEffect(() => {
-        axios.get('http://localhost:3002/equipment')
+        api.get('/equipment')
             .then(res => {
                 const options = res.data.data.map((equip: any) => ({
                     value: equip.id_equip,
@@ -76,7 +76,7 @@ const CreateSparePartsModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) 
         };
 
         try {
-            const response = await axios.post('http://localhost:3002/sparePart/postWithEquipments', payload);
+            const response = await api.post('/sparePart/postWithEquipments', payload);
             console.log('Respuesta del servidor:', response.data);
             onConfirm(formData);
             onClose();

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import styles from '../../styles/ListView.module.css';
 import { CustomSelect } from '../../components/CustomSelect';
+import api from "../../services/api";
+
 
 interface TypeChangeMaintenance {
     id_type_change: number;
@@ -31,11 +32,11 @@ const AddHourmeterModal: React.FC<AddHourmeterModalProps> = ({ isOpen, onClose, 
     useEffect(() => {
         if (!isOpen) return;
 
-        axios.get('http://localhost:3002/equipment/hourmeters/available')
+        api.get('/equipment/hourmeters/available')
             .then(res => setEquipments(res.data.data))
             .catch(err => console.error('Error cargando equipos:', err));
 
-        axios.get('http://localhost:3002/typeChangeMaintenance')
+        api.get('/typeChangeMaintenance')
             .then(res => setTypes(res.data.data))
             .catch(err => console.error('Error cargando tipos de cambio:', err));
     }, [isOpen]);
@@ -58,7 +59,7 @@ const AddHourmeterModal: React.FC<AddHourmeterModalProps> = ({ isOpen, onClose, 
         if (!hasAtLeastOneHour) return alert('Debe ingresar al menos una hora actual.');
 
         try {
-            await axios.post('http://localhost:3002/hourmeters', {
+            await api.post('/hourmeters', {
                 id_equip: selectedEquipId,
                 hours: formattedHours
             });

@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { FaBell } from 'react-icons/fa';
-import axios from 'axios';
 import styles from '../styles/NotificationBell.module.css';
+import api from "../services/api";
 
 const NotificationBell = () => {
     const [hasAlerts, setHasAlerts] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get("http://localhost:3002/hourmeters")
+        api.get("/hourmeters")
             .then(response => {
                 const data = response.data.data;
                 const anyAlert = data.some((row: any) =>

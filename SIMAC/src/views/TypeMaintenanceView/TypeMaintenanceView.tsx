@@ -3,7 +3,7 @@ import EditTypeChangeModal from "./EditTypeModal";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import ConfirmModal from "../../components/ConfirmModal";
-import axios from 'axios';
+import api from "../../services/api";
 
 interface TypeChange {
     id_type_change: number;
@@ -22,7 +22,7 @@ function TypeChangeMaintenanceView() {
     const [typeToDelete, setTypeToDelete] = useState<number | null>(null);
 
     const fetchTypes = () => {
-        axios.get('http://localhost:3002/typeChangeMaintenance')
+        api.get('/typeChangeMaintenance')
             .then(res => {
                 const received = res.data?.data;
                 if (Array.isArray(received)) {
@@ -53,7 +53,7 @@ function TypeChangeMaintenanceView() {
 
     const confirmDelete = () => {
         if (typeToDelete !== null) {
-            axios.delete(`http://localhost:3002/typeChangeMaintenance/${typeToDelete}`)
+            api.delete(`/typeChangeMaintenance/${typeToDelete}`)
                 .then(() => fetchTypes())
                 .catch(err => console.error("Error al eliminar:", err));
         }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import styles from '../../styles/Modal.module.css';
 import { CustomSelect } from '../../components/CustomSelect';
+import api from "../../services/api";
 
 type AreaOption = {
     value: string;
@@ -37,7 +37,7 @@ const EditTechnicianModal: React.FC<Props> = ({ isOpen, onClose, technician, onC
         if (isOpen && technician) {
             setFormData(technician);
 
-            axios.get('http://localhost:3002/area/')
+            api.get('/area/')
                 .then(res => {
                     const options = res.data.data.map((a: any) => ({
                         value: a.id_area,
@@ -57,7 +57,7 @@ const EditTechnicianModal: React.FC<Props> = ({ isOpen, onClose, technician, onC
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:3002/technician/${formData.id_tech}`, {
+            await api.put(`/technician/${formData.id_tech}`, {
                 name_tech: formData.name_tech,
                 contact_number_tech: formData.contact_number_tech,
                 id_area: formData.id_area || null,

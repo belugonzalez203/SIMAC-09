@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import axios from 'axios';
 import styles from '../../styles/Modal.module.css';
+import api from "../../services/api";
+
 
 type NewOrderData = {
     codigo: string;
@@ -80,7 +81,7 @@ const CreateEquipmentModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) =
         };
 
         try {
-            const response = await axios.post('http://localhost:3002/equipment/post', payload);
+            const response = await api.post('/equipment/post', payload);
             console.log('Respuesta del servidor:', response.data);
             onConfirm(formData);
             onClose();
@@ -93,11 +94,11 @@ const CreateEquipmentModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) =
 
     useEffect(() => {
         if (isOpen) {
-            axios.get('http://localhost:3002/area/')
+            api.get('/area/')
                 .then(res => setAreas(res.data.data))
                 .catch(err => console.error('Error al cargar areas:', err));
 
-            axios.get('http://localhost:3002/serviceStatusEquipment/')
+            api.get('/serviceStatusEquipment/')
                 .then(res => setService(res.data.data))
                 .catch(err => console.error('Error al cargar tipos de mantenimiento:', err));
         }

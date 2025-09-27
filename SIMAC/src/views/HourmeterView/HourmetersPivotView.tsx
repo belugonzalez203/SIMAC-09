@@ -1,9 +1,9 @@
 import styles from '../../styles/ListView.module.css';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import AddHourmeterModal from './AddHourmeterModal';
 import { FaEdit} from 'react-icons/fa';
 import React from 'react';
+import api from "../../services/api";
 
 interface MaintenanceData {
     id_type_change: number;
@@ -37,7 +37,7 @@ function HourmetersPivotView() {
     const [editValue, setEditValue] = useState('');
 
     useEffect(() => {
-        axios.get('http://localhost:3002/hourmeters')
+        api.get('/hourmeters')
             .then(response => {
                 setHourmeters(response.data.data);
                 setFilteredHourmeters(response.data.data);
@@ -99,7 +99,7 @@ function HourmetersPivotView() {
                 hour_current,
             });
 
-            await axios.put('http://localhost:3002/hourmeters', {
+            await api.put('/hourmeters', {
                 id_equip,
                 id_type_change,
                 hour_current,
@@ -109,7 +109,7 @@ function HourmetersPivotView() {
             setEditValue('');
 
             // Refrescar datos
-            const res = await axios.get('http://localhost:3002/hourmeters');
+            const res = await api.get('/hourmeters');
             setHourmeters(res.data.data);
             setFilteredHourmeters(res.data.data);
 
@@ -149,7 +149,7 @@ function HourmetersPivotView() {
                 onClose={() => setShowModal(false)}
                 onSuccess={() => {
                     setShowModal(false);
-                    axios.get('http://localhost:3002/hourmeters')
+                    api.get('/hourmeters')
                         .then(res => {
                             setHourmeters(res.data.data);
                             setFilteredHourmeters(res.data.data);

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import styles from '../../styles/ListView.module.css';
+import api from "../../services/api";
+
 
 interface Order {
     id_order: number;
@@ -25,7 +26,7 @@ const ExecutedOrderList: React.FC = () => {
     const [searchTechnician, setSearchTechnician] = useState('');
 
     useEffect(() => {
-        axios.get('http://localhost:3002/workOrders/executed')
+        api.get('/workOrders/executed')
             .then(res => {
                 setOrders(res.data.data);
                 setFilteredOrders(res.data.data);

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../styles/Modal.module.css';
-import axios from 'axios';
+import api from "../../services/api";
+
 
 type NewAreaData = {
     codigo: string;
@@ -59,7 +60,7 @@ const CreateAreaModal : React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
         };
 
         try {
-            const response = await axios.post('http://localhost:3002/area/post', payload);
+            const response = await api.post('/area/post', payload);
             console.log('Respuesta del servidor:', response.data);
             onConfirm(formData);
             onClose();

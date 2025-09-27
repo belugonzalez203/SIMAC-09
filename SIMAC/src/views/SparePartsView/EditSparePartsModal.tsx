@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../../styles/Modal.module.css';
-import axios from 'axios';
 import ReactSelect from 'react-select';
+import api from "../../services/api";
+
 
 type EquipOption = {
     value: number;
@@ -43,7 +44,7 @@ const EditSparePartsModal: React.FC<Props> = ({ isOpen, onClose, repuesto, onCon
             equipment_ids: [],
         });
 
-        axios.get('http://localhost:3002/equipment')
+        api.get('/equipment')
             .then(res => {
                 const options = res.data.data.map((equip: any) => ({
                     value: equip.id_equip,
@@ -52,7 +53,7 @@ const EditSparePartsModal: React.FC<Props> = ({ isOpen, onClose, repuesto, onCon
                 setEquipOptions(options);
 
                 // Obtiene asociaciones del repuesto
-                return axios.get(`http://localhost:3002/sparePart/equipments/${repuesto.id_spare_part}`);
+                return api.get(`/sparePart/equipments/${repuesto.id_spare_part}`);
             })
             .then(res => {
                 const ids = res.data.equipment_ids as number[];
@@ -77,7 +78,7 @@ const EditSparePartsModal: React.FC<Props> = ({ isOpen, onClose, repuesto, onCon
         };
 
         try {
-            await axios.put(`http://localhost:3002/sparePart/updateWithEquipments/${formData.id_spare_part}`, payload);
+            await api.put(`/sparePart/updateWithEquipments/${formData.id_spare_part}`, payload);
             onConfirm();
             onClose();
         } catch (error) {

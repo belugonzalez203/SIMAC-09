@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import styles from '../../styles/Modal.module.css';
 import { CustomSelect } from '../../components/CustomSelect';
+import api from "../../services/api";
+
 
 type TechnicianData = {
     codigo: string;
@@ -65,7 +66,7 @@ const CreateTechnicianModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) 
         };
 
         try {
-            const response = await axios.post('http://localhost:3002/technician/post', payload);
+            const response = await api.post('/technician/post', payload);
             console.log('Técnico creado:', response.data);
             onConfirm(formData);
             onClose();
@@ -82,7 +83,7 @@ const CreateTechnicianModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) 
 
     useEffect(() => {
         if (isOpen) {
-            axios.get('http://localhost:3002/area/')
+            api.get('/area/')
                 .then(res => {
                     const options = res.data.data.map((a: any) => ({
                         value: a.id_area,

@@ -3,7 +3,8 @@ import EditSparePartsModal from "./EditSparePartsModal";
 import ConfirmModal from "../../components/ConfirmModal";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from "../../services/api";
+
 
 interface SparePart {
     id_spare_part: string;
@@ -36,8 +37,8 @@ function SparePartsView() {
         const fetchData = async () => {
             try {
                 const [spRes, eqRes] = await Promise.all([
-                    axios.get('http://localhost:3002/sparePart/'),
-                    axios.get('http://localhost:3002/sparePart/equipments/')
+                    await api.get('/sparePart/'),
+                    await api.get('/sparePart/equipments/')
                 ]);
 
                 const equipmentMap: Record<string, string> = {};
@@ -68,7 +69,7 @@ function SparePartsView() {
     const confirmDelete = () => {
         if (!sparePartToDelete) return;
 
-        axios.delete(`http://localhost:3002/sparePart/${sparePartToDelete}`)
+        api.delete(`/sparePart/${sparePartToDelete}`)
             .then(() => {
                 setSpareParts(prev => prev.filter(sp => sp.id_spare_part !== sparePartToDelete));
                 console.log(`Repuesto ${sparePartToDelete} eliminado correctamente`);

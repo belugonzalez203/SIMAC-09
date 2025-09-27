@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styles from '../../styles/Modal.module.css';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import api from "../../services/api";
+
 
 type TypeFormData = {
     nombre: string;
@@ -51,7 +52,7 @@ const CreateTypeChangeModal:React.FC<Props> = ({ isOpen, onClose, onConfirm }) =
         };
 
         try {
-            await axios.post('http://localhost:3002/typeChangeMaintenance', payload);
+            await api.post('/typeChangeMaintenance', payload);
             onConfirm(formData);
             onClose();
             navigate('/type/maintenance');

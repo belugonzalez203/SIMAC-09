@@ -1,7 +1,8 @@
-import axios from 'axios';
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import styles from '../../styles/CreateOrderForm.module.css';
+import api from "../../services/api";
+
 
 interface OrderFormData {
     id_order: string;
@@ -28,7 +29,7 @@ const OrderReceivedView: React.FC = () => {
     const [form, setForm] = useState<OrderFormData | null>(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:3002/workOrders/${id}`)
+        api.get(`/workOrders/${id}`)
             .then((res) => {
                 setForm(res.data.data);
             })

@@ -3,7 +3,7 @@ import EditEquipmentModal from "./EditEquipmentModal";
 import ConfirmModal from "../../components/ConfirmModal";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from "../../services/api";
 
 interface Equipment {
     id_equip: number;
@@ -46,8 +46,8 @@ function EquipmentListView () {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [equipmentToDelete, setEquipmentToDelete] = useState<number | null>(null);
 
-    const fetchEquipments = () => {
-        axios.get('http://localhost:3002/equipment/')
+    const fetchEquipments = async () => {
+        await api.get('/equipment/')
             .then(response => {
                 console.log('Datos recibidos del backend:', response.data.data);
                 setEquipments(response.data.data);
@@ -63,9 +63,9 @@ function EquipmentListView () {
         setIsConfirmOpen(true);
     };
 
-    const confirmDelete = () => {
+    const confirmDelete = async () => {
         if (!equipmentToDelete) return;
-        axios.delete(`http://localhost:3002/equipment/${equipmentToDelete}`)
+        await api.delete(`/equipment/${equipmentToDelete}`)
             .then(() => {
                 setEquipments(prev => prev.filter(equip => equip.id_equip !== equipmentToDelete));
                 console.log(`Equipo ${equipmentToDelete} eliminado correctamente`);
