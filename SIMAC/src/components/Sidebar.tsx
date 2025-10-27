@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import  { NavLink } from 'react-router-dom';
+import { FaPlus } from "react-icons/fa";
 import styles from '../styles/Sidebar.module.css';
 import NewOrderModal from '../views/OrderView/NewOrderModal.tsx';
 import CreateAreaModal from '../views/AreaView/CreateAreaModal.tsx';
@@ -51,10 +52,12 @@ const Sidebar = () => {
                             Órdenes Recibidas
                         </NavLink>
                         <button
-                            className={`${styles.iconButton}`}
+                            className={`${styles.subLink} ${styles.buttonLink}`}
                             onClick={() => setActiveModal("order")}
                             title="Crear nueva orden"
-                        >   <img src="./add.png" alt="addNew" className={styles.img} />
+                        >   <span className={styles.img}>
+                                <FaPlus size={21} color="white"  />
+                            </span>
                         </button>
                     </li>
                     <li className={styles.combinedItem}>
@@ -89,7 +92,9 @@ const Sidebar = () => {
                         <button
                             className={`${styles.subLink} ${styles.buttonLink}`}
                             onClick={() => setActiveModal("equipment")}
-                        >   <img src="/add.png" alt="addNew" className={styles.img} />
+                        >   <span className={styles.img}>
+                                <FaPlus size={21} color="white"  />
+                            </span>
                         </button>
                     </li>
                     <li className={styles.combinedItem}>
@@ -104,7 +109,9 @@ const Sidebar = () => {
                         <button
                             className={`${styles.subLink} ${styles.buttonLink}`}
                             onClick={() => setActiveModal("spareParts")}
-                        >   <img src="/add.png" alt="addNew" className={styles.img} />
+                        >   <span className={styles.img}>
+                                <FaPlus size={21} color="white"  />
+                            </span>
                         </button>
                     </li>
                     <li className={styles.combinedItem}>
@@ -119,7 +126,9 @@ const Sidebar = () => {
                         <button
                             className={`${styles.subLink} ${styles.buttonLink}`}
                             onClick={() => setActiveModal("area")}
-                        >   <img src="/add.png" alt="addNew" className={styles.img} />
+                        >   <span className={styles.img}>
+                                <FaPlus size={21} color="white"  />
+                            </span>
                         </button>
                     </li>
                     <li className={styles.combinedItem}>
@@ -134,7 +143,9 @@ const Sidebar = () => {
                         <button
                             className={`${styles.subLink} ${styles.buttonLink}`}
                             onClick={() => setActiveModal("technicians")}
-                        >   <img src="/add.png" alt="addNew" className={styles.img} />
+                        >   <span className={styles.img}>
+                                <FaPlus size={21} color="white"  />
+                            </span>
                         </button>
                     </li>
                     <li className={styles.combinedItem}>
@@ -149,7 +160,9 @@ const Sidebar = () => {
                         <button
                             className={`${styles.subLink} ${styles.buttonLink}`}
                             onClick={() => setActiveModal("typeMaintenance")}
-                        >   <img src="/add.png" alt="addNew" className={styles.img} />
+                        >   <span className={styles.img}>
+                                <FaPlus size={21} color="white"  />
+                            </span>
                         </button>
                     </li>
                 </ul>

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { IoPrintOutline } from "react-icons/io5";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 import styles from '../../styles/ListView.module.css';
 import api from "../../services/api";
 
@@ -110,20 +112,18 @@ const ExecutedOrderList: React.FC = () => {
                             <td>{order.name_tech}</td>
                             <td>{order.id_tech}</td>
                             <td className={styles.iconCell}>
-                                <button
-                                    className={`${styles.subLink} ${styles.buttonLink}`}
+                                <MdOutlineRemoveRedEye
+                                    className={styles.seeMoreIcon}
                                     onClick={() => navigate(`/order/executed/${order.id_order}`)}
-                                >
-                                    <img src="/seeMore.png" alt="seeMore" className={styles.img} />
-                                </button>
+                                    style={{ cursor: 'pointer' }}
+                                />
                             </td>
                             <td className={styles.iconCell}>
-                                <button
-                                    className={styles.buttonLink}
+                                <IoPrintOutline
+                                    className={styles.executeIcon}
                                     onClick={() => navigate(`/order/print/${order.id_order}`)}
-                                >
-                                    <img src="/print.png" alt="printOrder" className={styles.img} />
-                                </button>
+                                    style={{ cursor: 'pointer' }}
+                                />
                             </td>
                         </tr>
                     ))}

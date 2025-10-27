@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { HiOutlineArrowRightStartOnRectangle } from "react-icons/hi2";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 import styles from '../../styles/ListView.module.css';
 import api from "../../services/api";
 
@@ -108,20 +110,18 @@ const ExecutedOrderList: React.FC = () => {
                             <td>{order.date_delivery}</td>
                             <td>{order.id_tech}-{order.name_tech}</td>
                             <td className={styles.iconCell}>
-                                <button
-                                    className={`${styles.subLink} ${styles.buttonLink}`}
+                                <MdOutlineRemoveRedEye
+                                    className={styles.seeMoreIcon}
                                     onClick={() => navigate(`/order/received/${order.id_order}`)}
-                                >
-                                    <img src="/seeMore.png" alt="seeMore" className={styles.img} />
-                                </button>
+                                    style={{ cursor: 'pointer' }}
+                                />
                             </td>
                             <td className={styles.iconCell}>
-                                <button
-                                    className={styles.buttonLink}
+                                <HiOutlineArrowRightStartOnRectangle
+                                    className={styles.executeIcon}
                                     onClick={() => navigate(`/order/execute/${order.id_order}`)}
-                                >
-                                    <img src="/execute.png" alt="executeOrder" className={styles.img} />
-                                </button>
+                                    style={{ cursor: 'pointer' }}
+                                />
                             </td>
                         </tr>
                     ))}
