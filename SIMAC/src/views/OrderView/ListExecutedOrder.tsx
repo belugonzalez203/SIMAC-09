@@ -112,18 +112,20 @@ const ExecutedOrderList: React.FC = () => {
                             <td>{order.name_tech}</td>
                             <td>{order.id_tech}</td>
                             <td className={styles.iconCell}>
-                                <MdOutlineRemoveRedEye
-                                    className={styles.seeMoreIcon}
+                                <button
+                                    className={`${styles.subLink} ${styles.buttonLink}`}
                                     onClick={() => navigate(`/order/executed/${order.id_order}`)}
-                                    style={{ cursor: 'pointer' }}
-                                />
+                                >
+                                    <img src="./seeMore.png" alt="seeMore" className={styles.img} />
+                                </button>
                             </td>
                             <td className={styles.iconCell}>
-                                <IoPrintOutline
-                                    className={styles.executeIcon}
+                                <button
+                                    className={styles.buttonLink}
                                     onClick={() => navigate(`/order/print/${order.id_order}`)}
-                                    style={{ cursor: 'pointer' }}
-                                />
+                                >
+                                    <img src="./print.png" alt="printOrder" className={styles.img} />
+                                </button>
                             </td>
                         </tr>
                     ))}
