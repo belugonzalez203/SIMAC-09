@@ -8,11 +8,12 @@ import api from "../../services/api";
 
 
 interface Technician {
-    id_tech: string;
+    id_tech: number;
+    code_tech: string;
     name_tech: string;
     contact_number_tech: string;
     name_area?: string | null;
-    id_area?: string | null;
+    id_area?: number | null;
 }
 
 function TechnicianView() {
@@ -26,7 +27,7 @@ function TechnicianView() {
     const [selectedTechnician, setSelectedTechnician] = useState<Technician | null>(null);
 
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-    const [technicianToDelete, setTechnicianToDelete] = useState<string | null>(null);
+    const [technicianToDelete, setTechnicianToDelete] = useState<number | null>(null);
 
     useEffect(() => {
         fetchTechnicians();
@@ -45,14 +46,15 @@ function TechnicianView() {
 
     useEffect(() => {
         const filtered = technicians.filter(t =>
-            t.id_tech.toLowerCase().includes(searchCode.toLowerCase()) &&
-            t.name_tech.toLowerCase().includes(searchName.toLowerCase()) &&
-            (t.name_area ?? '').toLowerCase().includes(searchArea.toLowerCase())
-        );
+            (t.code_tech ?? '').toLowerCase().includes(searchCode.toLowerCase()) &&
+            (t.name_tech ?? '').toLowerCase().includes(searchName.toLowerCase()) &&
+            (t.name_area ?? '').toLowerCase().includes(searchArea.toLowerCase())    
+);
+
         setFilteredTechnicians(filtered);
     }, [searchCode, searchName, searchArea, technicians]);
 
-    const handleDeleteClick = (id: string) => {
+    const handleDeleteClick = (id: number) => {
         setTechnicianToDelete(id);
         setIsConfirmOpen(true);
     };
@@ -133,7 +135,7 @@ function TechnicianView() {
                     <tbody>
                     {filteredTechnicians.map((tech) => (
                         <tr key={tech.id_tech}>
-                            <td>{tech.id_tech}</td>
+                            <td>{tech.code_tech}</td>
                             <td>{tech.name_tech}</td>
                             <td>{tech.contact_number_tech}</td>
                             <td>{tech.name_area}</td>

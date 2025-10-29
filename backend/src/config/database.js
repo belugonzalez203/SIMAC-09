@@ -7,9 +7,9 @@ const DB_PATH = process.env.DB_PATH || path.resolve(__dirname, "./siac.sqlite");
 
 const db = new sqlite3.Database(DB_PATH, (err) => {
     if (err) {
-        console.error("❌ Error al conectar a SQLite:", err.message);
+        console.error("Error al conectar a SQLite:", err.message);
     } else {
-        console.log("✅ Conectado a la base de datos SQLite en:", DB_PATH);
+        console.log("Conectado a la base de datos SQLite en:", DB_PATH);
     }
 });
 

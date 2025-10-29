@@ -9,6 +9,7 @@ interface OrderFormData {
     name_user: string;
     date_request: string;
     hour_request: string;
+    code_tech: string;
     id_tech: string;
     name_tech: string;
     date_delivery: string;
@@ -30,6 +31,7 @@ interface OrderFormData {
 
 interface TechnicianSupport {
     id_tech: string;
+    code_tech: string;
     name_tech: string;
 }
 
@@ -84,7 +86,7 @@ const ExecutedOrderDetails: React.FC = () => {
                     <div className={styles.tableRow}>
                         <div className={styles.cell}><strong>Nro Orden:</strong> {form.id_order}</div>
                         <div className={styles.cell}><strong>Emisor:</strong> {form.name_user}</div>
-                        <div className={styles.cell}><strong>Técnico:</strong> {form.id_tech} - {form.name_tech}</div>
+                        <div className={styles.cell}><strong>Técnico:</strong> {form.code_tech} - {form.name_tech}</div>
                     </div>
                     <div className={styles.tableRow}>
                         <div className={styles.cell}><strong>Fecha solicitud:</strong> {form.date_request}</div>
@@ -154,7 +156,7 @@ const ExecutedOrderDetails: React.FC = () => {
                         {technicians.length > 0 ? (
                             <span>
                             {technicians
-                                .map((t) => `(${t.id_tech}) ${t.name_tech}`)
+                                .map((t) => `(${t.code_tech}) ${t.name_tech}`)
                                 .join(', ')}
                         </span>
                         ) : (

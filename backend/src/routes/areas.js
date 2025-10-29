@@ -14,14 +14,14 @@ router.get('/', (req, res) => {
 });
 
 router.post('/post', (req, res) => {
-    const { id_area, name_area, in_charge, contact_number_area } = req.body;
+    const { id_area, code_area, name_area, in_charge, contact_number_area } = req.body;
 
-    if (!id_area || !name_area) {
+    if (!code_area || !name_area) {
         return res.status(400).json({ error: 'Datos requeridos inválidos. Se requiere id_area y name_area' });
     }
 
-    const query = `INSERT INTO areas (id_area, name_area, in_charge, contact_number_area) VALUES (?, ?, ?, ? )`;
-    db.run(query, [id_area, name_area, in_charge, contact_number_area], function(err) {
+    const query = `INSERT INTO areas (code_area, name_area, in_charge, contact_number_area) VALUES (?, ?, ?, ?)`;
+    db.run(query, [code_area, name_area, in_charge, contact_number_area], function(err) {
         if (err) {
             console.error('Error al insertar el area:', err);
             return res.status(500).json({ error: 'Error al insertar' });
@@ -32,14 +32,14 @@ router.post('/post', (req, res) => {
 
 router.put('/:id', (req, res) => {
     const { id } = req.params;
-    const { name_area, in_charge, contact_number_area } = req.body;
+    const { code_area, name_area, in_charge, contact_number_area } = req.body;
 
-    if (!name_area) {
+    if (!name_area || !code_area) {
         return res.status(400).json({ error: 'Datos requeridos inválidos. Se requiere name_area' });
     }
 
-    const query = `UPDATE areas SET name_area = ?, in_charge = ?, contact_number_area = ? WHERE id_area = ?`;
-    db.run(query, [name_area, in_charge, contact_number_area, id], function(err) {
+    const query = `UPDATE areas SET code_area = ?, name_area = ?, in_charge = ?, contact_number_area = ? WHERE id_area = ?`;
+    db.run(query, [code_area, name_area, in_charge, contact_number_area, id], function(err) {
         if (err) {
             console.error('Error al actualizar el area:', err);
             return res.status(500).json({ error: 'Error al actualizar' });

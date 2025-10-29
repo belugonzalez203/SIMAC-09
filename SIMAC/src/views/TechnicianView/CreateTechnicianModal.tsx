@@ -59,7 +59,7 @@ const CreateTechnicianModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) 
         if (!validate()) return;
 
         const payload = {
-            id_tech: formData.codigo,
+            code_tech: formData.codigo,
             name_tech: formData.nombre,
             contact_number_tech: formData.contacto || null,
             id_area: formData.area || null,
@@ -87,7 +87,7 @@ const CreateTechnicianModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) 
                 .then(res => {
                     const options = res.data.data.map((a: any) => ({
                         value: a.id_area,
-                        label: `${a.name_area} (${a.id_area})`,
+                        label: `${a.name_area} (${a.code_area})`,
                     }));
                     setAreaOptions(options);
                 })

@@ -53,7 +53,7 @@ const CreateAreaModal : React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
         if (!validate()) return;
 
         const payload = {
-            id_area: formData.codigo,
+            code_area: formData.codigo,
             name_area: formData.area,
             in_charge: formData.responsable || null,
             contact_number_area: formData.contacto || null,

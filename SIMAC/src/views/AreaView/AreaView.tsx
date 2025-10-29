@@ -7,7 +7,8 @@ import api from "../../services/api";
 
 
 interface Area {
-    id_area: string;
+    id_area: number;
+    code_area: string;
     name_area: string;
     in_charge: string;
     contact_number_area: string;
@@ -22,9 +23,9 @@ function AreaView() {
     const [selectedArea, setSelectedArea] = useState<Area | null>(null);
 
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-    const [areaToDelete, setAreaToDelete] = useState<string | null>(null);
+    const [areaToDelete, setAreaToDelete] = useState<number | null>(null);
 
-    const handleDeleteClick = (id: string) => {
+    const handleDeleteClick = (id: number) => {
         setAreaToDelete(id);
         setIsConfirmOpen(true);
     };
@@ -66,7 +67,7 @@ function AreaView() {
 
     useEffect(() => {
         const filtered = areas.filter(area =>
-            area.id_area.toLowerCase().includes(searchCode.toLowerCase()) &&
+            area.code_area.toLowerCase().includes(searchCode.toLowerCase()) &&
             area.name_area.toLowerCase().includes(searchName.toLowerCase())
             );
         setFilteredAreas(filtered);
@@ -116,7 +117,7 @@ function AreaView() {
                             <tbody>
                                 {filteredAreas.map((area) => (
                                     <tr key={area.id_area}>
-                                        <td>{area.id_area}</td>
+                                        <td>{area.code_area}</td>
                                         <td>{area.name_area}</td>
                                         <td>{area.in_charge}</td>
                                         <td>{area.contact_number_area}</td>

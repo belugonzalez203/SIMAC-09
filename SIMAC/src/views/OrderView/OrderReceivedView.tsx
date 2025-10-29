@@ -9,6 +9,7 @@ interface OrderFormData {
     name_user: string;
     date_request: string;
     hour_request: string;
+    code_tech: string;
     id_tech: string;
     name_tech: string;
     date_delivery: string;
@@ -51,7 +52,7 @@ const OrderReceivedView: React.FC = () => {
                     <div className={styles.grid2}>
                         <Field label="Nro Orden" value={form.id_order} />
                         <Field label="Emisor" value={form.name_user} />
-                        <Field label="Técnico" value={`${form.id_tech} - ${form.name_tech}`} />
+                        <Field label="Técnico" value={`${form.code_tech} - ${form.name_tech}`} />
                         <Field label="Fecha solicitud" value={form.date_request} />
                         <Field label="Hora solicitud" value={form.hour_request} />
                         <Field label="Fecha entrega" value={form.date_delivery} />

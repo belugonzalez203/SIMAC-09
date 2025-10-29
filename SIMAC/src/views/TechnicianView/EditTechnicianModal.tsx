@@ -9,11 +9,12 @@ type AreaOption = {
 };
 
 type Technician = {
-    id_tech: string;
+    id_tech: number;
+    code_tech: string;
     name_tech: string;
     contact_number_tech: string;
     name_area?: string | null;
-    id_area?: string | null;
+    id_area?: number | null;
 };
 
 type Props = {
@@ -25,10 +26,11 @@ type Props = {
 
 const EditTechnicianModal: React.FC<Props> = ({ isOpen, onClose, technician, onConfirm }) => {
     const [formData, setFormData] = useState<Technician>({
-        id_tech: '',
+        id_tech: 0,
+        code_tech: '',
         name_tech: '',
         contact_number_tech: '',
-        id_area: '',
+        id_area: null,
     });
 
     const [areaOptions, setAreaOptions] = useState<AreaOption[]>([]);
@@ -40,8 +42,8 @@ const EditTechnicianModal: React.FC<Props> = ({ isOpen, onClose, technician, onC
             api.get('/area/')
                 .then(res => {
                     const options = res.data.data.map((a: any) => ({
-                        value: a.id_area,
-                        label: `${a.name_area} (${a.id_area})`,
+                        value: String(a.id_area),
+                        label: `${a.code_area} - ${a.name_area}`,
                     }));
                     setAreaOptions(options);
                 })
@@ -58,6 +60,7 @@ const EditTechnicianModal: React.FC<Props> = ({ isOpen, onClose, technician, onC
         e.preventDefault();
         try {
             await api.put(`/technician/${formData.id_tech}`, {
+                code_tech: formData.code_tech,
                 name_tech: formData.name_tech,
                 contact_number_tech: formData.contact_number_tech,
                 id_area: formData.id_area || null,
@@ -76,8 +79,9 @@ const EditTechnicianModal: React.FC<Props> = ({ isOpen, onClose, technician, onC
             <div className={styles.modal}>
                 <h2 className={styles.title}>EDITAR TÉCNICO</h2>
                 <form className={styles.form} onSubmit={handleSubmit}>
+
                     <label>Código</label>
-                    <input type="text" value={formData.id_tech} disabled />
+                    <input type="text" name="code_tech" value={formData.code_tech} onChange={handleChange}/>
 
                     <label>Nombre</label>
                     <input type="text" name="name_tech" value={formData.name_tech} onChange={handleChange} />
@@ -88,8 +92,11 @@ const EditTechnicianModal: React.FC<Props> = ({ isOpen, onClose, technician, onC
                     <label>Área</label>
                     <CustomSelect
                         options={areaOptions}
-                        value={areaOptions.find(opt => opt.value === formData.id_area) || null}
-                        onChange={opt => setFormData(prev => ({ ...prev, id_area: opt?.value || '' }))}
+                        value={areaOptions.find(opt => opt.value === String(formData.id_area)) || null}
+                        onChange={opt => setFormData(prev => ({ 
+                            ...prev, 
+                            id_area: opt ? Number(opt.value) : null,
+                    }))}
                         placeholder={formData.name_area || "Selecciona un área"}
                     />
 

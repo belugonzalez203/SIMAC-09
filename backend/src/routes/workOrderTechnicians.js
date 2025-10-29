@@ -4,7 +4,7 @@ const db = require('../config/database');
 
 router.get('/techniciansByOrder/:id_order', (req, res) => {
     const query = `
-        SELECT wt.id_order, wt.id_tech, t.name_tech
+        SELECT wt.id_order, wt.id_tech, t.code_tech, t.name_tech
         FROM work_order_technicians wt
         JOIN technicians t ON wt.id_tech = t.id_tech
         WHERE wt.id_order = ?

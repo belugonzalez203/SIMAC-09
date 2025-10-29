@@ -63,7 +63,7 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
         const fechaEntregaValida = formData.fechaEntrega === '' || formData.fechaEntrega >= today;
 
             const newErrors = {
-            tecnico: formData.tecnico.trim() === '',
+            tecnico: formData.tecnico === '',
             equipo: formData.equipo.trim() === '',
             claseMantenimiento: formData.claseMantenimiento.trim() === '',
             tipoMantenimiento: formData.tipoMantenimiento.trim() === '',
@@ -80,13 +80,13 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
 
             const payload = {
                 id_user: "1",
-                id_tech: formData.tecnico,
+                id_tech: parseInt(formData.tecnico),
                 date_delivery: formData.fechaEntrega || null,
                 id_equip: parseInt(formData.equipo),
                 id_class: parseInt(formData.claseMantenimiento),
                 id_type: parseInt(formData.tipoMantenimiento),
                 priority: formData.prioridad,
-                work_requested: formData.trabajoSolicitado,
+                work_requested: formData.trabajoSolicitado.trim(),
             };
 
             try {
@@ -109,7 +109,7 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
                 .then(res => setTecnicoOptions(
                     res.data.data.map((t: any) => ({
                         value: t.id_tech,
-                        label: `${t.name_tech} (${t.id_tech})`
+                        label: `${t.code_tech} - ${t.name_tech}`
                     }))
                 ))
                 .catch(err => console.error('Error al cargar técnicos:', err));

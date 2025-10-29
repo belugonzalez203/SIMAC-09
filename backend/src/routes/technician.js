@@ -4,8 +4,8 @@ const db = require('../config/database');
 
 router.get('/', (req, res) => {
     const query = `
-        SELECT t.id_tech, t.name_tech, t.contact_number_tech,
-               t.id_area, a.name_area
+        SELECT t.id_tech, t.code_tech, t.name_tech, t.contact_number_tech,
+               t.id_area, a.code_area, a.name_area
         FROM technicians t
         LEFT JOIN areas a ON t.id_area = a.id_area
     `;
@@ -19,14 +19,14 @@ router.get('/', (req, res) => {
 });
 
 router.post('/post', (req, res) => {
-    const { id_tech, name_tech, contact_number_tech, id_area, id_user } = req.body;
+    const { code_tech, name_tech, contact_number_tech, id_area, id_user } = req.body;
 
-    if (!id_tech || !name_tech) {
-        return res.status(400).json({ error: 'Datos requeridos inválidos. Se requiere id_tech y name_tech' });
+    if (!code_tech || !name_tech) {
+        return res.status(400).json({ error: 'Datos requeridos inválidos. Se requiere code_tech y name_tech' });
     }
 
-    const query = `INSERT INTO technicians (id_tech, name_tech, contact_number_tech, id_area, id_user) VALUES (?, ?, ?, ?, ? )`;
-    db.run(query, [id_tech, name_tech, contact_number_tech, id_area, id_user], function(err) {
+    const query = `INSERT INTO technicians (code_tech, name_tech, contact_number_tech, id_area, id_user) VALUES (?, ?, ?, ?, ? )`;
+    db.run(query, [code_tech, name_tech, contact_number_tech, id_area, id_user], function(err) {
         if (err) {
             console.error('Error al insertar el tecnico:', err);
             return res.status(500).json({ error: 'Error al insertar' });
@@ -37,10 +37,12 @@ router.post('/post', (req, res) => {
 
 router.put('/:id', (req, res) => {
     const { id } = req.params;
-    const { name_tech, contact_number_tech, id_area } = req.body;
+    const { code_tech, name_tech, contact_number_tech, id_area } = req.body;
 
-    const query = `UPDATE technicians SET name_tech = ?, contact_number_tech = ?, id_area = ? WHERE id_tech = ?`;
-    db.run(query, [name_tech, contact_number_tech, id_area, id], function(err) {
+    const query = `UPDATE technicians 
+                    SET code_tech = ?, name_tech = ?, contact_number_tech = ?, id_area = ? 
+                    WHERE id_tech = ?`;
+    db.run(query, [code_tech, name_tech, contact_number_tech, id_area, id], function(err) {
         if (err) {
             console.error('Error al actualizar el tecnico:', err);
             return res.status(500).json({ error: 'Error al actualizar' });

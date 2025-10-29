@@ -13,6 +13,7 @@ interface Order {
     brand_equip: string;
     name_area: string;
     date_delivery: string;
+    code_tech: string;
     id_tech: string;
     name_tech: string;
 }
@@ -108,7 +109,7 @@ const ExecutedOrderList: React.FC = () => {
                             <td>{order.brand_equip}</td>
                             <td>{order.name_area}</td>
                             <td>{order.date_delivery}</td>
-                            <td>{order.id_tech}-{order.name_tech}</td>
+                            <td>{order.code_tech}-{order.name_tech}</td>
                             <td className={styles.iconCell}>
                                 <button
                                     className={`${styles.subLink} ${styles.buttonLink}`}

@@ -6,6 +6,7 @@ router.get('/executed', (req, res) => {
     const query = `
         SELECT
             wo.id_order                AS id_order,
+            t.code_tech                AS code_tech,
             t.id_tech                  AS id_tech,
             t.name_tech                AS name_tech,
             e.code_equip               AS code_equip,
@@ -33,6 +34,7 @@ router.get('/pending', (req, res) => {
         SELECT
             wo.id_order                AS id_order,
             t.id_tech                  AS id_tech,
+            t.code_tech                AS code_tech,
             t.name_tech                AS name_tech,
             e.code_equip               AS code_equip,
             e.name_equip               AS name_equip,
@@ -144,6 +146,7 @@ router.get('/:id', (req, res) => {
             u.name_user                AS name_user,
             wo.date_request            AS date_request,
             wo.hour_request            AS hour_request,
+            t.code_tech                AS code_tech,
             t.id_tech                  AS id_tech,
             t.name_tech                AS name_tech,
             wo.date_delivery           AS date_delivery,
