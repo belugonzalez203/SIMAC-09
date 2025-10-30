@@ -111,3 +111,4 @@ const EditTechnicianModal: React.FC<Props> = ({ isOpen, onClose, technician, onC
 };
 
 export default EditTechnicianModal;
+
