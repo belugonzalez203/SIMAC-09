@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { IoPrintOutline } from "react-icons/io5";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { FaTrashAlt } from 'react-icons/fa';
 import styles from '../../styles/ListView.module.css';
+import ConfirmModal from "../../components/ConfirmModal";
 import api from "../../services/api";
 
 
@@ -28,7 +30,38 @@ const ExecutedOrderList: React.FC = () => {
     const [searchEquipment, setSearchEquipment] = useState('');
     const [searchTechnician, setSearchTechnician] = useState('');
 
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [orderToDelete, setOrderToDelete] = useState<number | null>(null);
+
+    const handleDeleteClick = (id: number) => {
+        setOrderToDelete(id);
+        setIsConfirmOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (orderToDelete === null) return;
+
+        api.delete(`/workOrders/${orderToDelete}`)
+            .then(() => {
+                setOrders(prev => prev.filter(order => order.id_order !== orderToDelete));
+                console.log(`Órden de trabajo ${orderToDelete} eliminada correctamente`);
+            })
+            .catch(error => {
+                console.error(`Error eliminando órden de trabajo ${orderToDelete}:`, error);
+                alert('Hubo un error al eliminar la órden de trabajo');
+            })
+            .finally(() => {
+                setIsConfirmOpen(false);
+                setOrderToDelete(null);
+                fetchOrders();
+            });
+    };
+
     useEffect(() => {
+            fetchOrders ();
+        }, []);
+
+    const fetchOrders = () => {
         api.get('/workOrders/executed')
             .then(res => {
                 setOrders(res.data.data);
@@ -36,7 +69,7 @@ const ExecutedOrderList: React.FC = () => {
                 console.log('Órdenes ejecutadas:', res.data.data);
             })
             .catch(err => console.error('Error cargando órdenes:', err));
-    }, []);
+    };
 
     useEffect(() => {
         const filtered = orders.filter(order =>
@@ -97,9 +130,9 @@ const ExecutedOrderList: React.FC = () => {
                         <th>Área</th>
                         <th>Entregado</th>
                         <th>Técnico</th>
-                        <th>FichaT</th>
                         <th>Ver más</th>
                         <th>Imprimir</th>
+                        <th>Eliminar</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -110,8 +143,7 @@ const ExecutedOrderList: React.FC = () => {
                             <td>{order.brand_equip}</td>
                             <td>{order.name_area}</td>
                             <td>{order.completion_date}</td>
-                            <td>{order.name_tech}</td>
-                            <td>{order.code_tech}</td>
+                            <td>{order.code_tech}-{order.name_tech}</td>
                             <td className={styles.iconCell}>
                                 <button
                                     className={`${styles.subLink} ${styles.buttonLink}`}
@@ -128,11 +160,24 @@ const ExecutedOrderList: React.FC = () => {
                                     <img src="./print.png" alt="printOrder" className={styles.img} />
                                 </button>
                             </td>
+                            <td className={styles.iconCell}>
+                                <FaTrashAlt
+                                    className={styles.deleteIcon}
+                                    onClick={() => handleDeleteClick(order.id_order)}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                            </td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
             </div>
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                message="¿Está seguro de que desea eliminar esta órden?"
+                onConfirm={confirmDelete}
+                onCancel={() => setIsConfirmOpen(false)}
+            />
         </div>
     );
 };

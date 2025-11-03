@@ -339,5 +339,70 @@ router.put('/:id', (req, res) => {
     );
 });
 
+router.delete('/:id', (req, res) => {
+    console.log('Recibida solicitud DELETE para id:', req.params.id);
+    const { id } = req.params;
+
+    db.serialize(() => {
+        db.run('BEGIN TRANSACTION');
+
+        // Elimina posibles relaciones con técnicos
+        db.run(
+            'DELETE FROM work_order_technicians WHERE id_order = ?',
+            [id],
+            function (err) {
+                if (err) {
+                    console.error('Error al eliminar técnicos asociados:', err);
+                    db.run('ROLLBACK');
+                    return res.status(500).json({ error: 'Error al eliminar técnicos asociados' });
+                }
+
+                // Elimina posibles relaciones con repuestos
+                db.run(
+                    'DELETE FROM work_order_spare_parts WHERE id_order = ?',
+                    [id],
+                    function (err) {
+                        if (err) {
+                            console.error('Error al eliminar repuestos asociados:', err);
+                            db.run('ROLLBACK');
+                            return res.status(500).json({ error: 'Error al eliminar repuestos asociados' });
+                        }
+
+                        // Elimina la orden de trabajo principal
+                        db.run(
+                            'DELETE FROM work_orders WHERE id_order = ?',
+                            [id],
+                            function (err) {
+                                if (err) {
+                                    console.error('Error al eliminar la orden de trabajo:', err);
+                                    db.run('ROLLBACK');
+                                    return res.status(500).json({ error: 'Error al eliminar la orden de trabajo' });
+                                }
+
+                                // Si no se encontró la orden
+                                if (this.changes === 0) {
+                                    db.run('ROLLBACK');
+                                    return res.status(404).json({ error: 'Orden de trabajo no encontrada' });
+                                }
+
+                                // Si todo fue bien, confirmamos los cambios
+                                db.run('COMMIT', (err) => {
+                                    if (err) {
+                                        console.error('Error al confirmar transacción:', err);
+                                        return res.status(500).json({ error: 'Error al confirmar transacción' });
+                                    }
+                                    res.json({
+                                        message:
+                                            'Orden de trabajo eliminada correctamente',
+                                    });
+                                });
+                            }
+                        );
+                    }
+                );
+            }
+        );
+    });
+});
 
 module.exports = router;

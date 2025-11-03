@@ -153,7 +153,7 @@ function AreaView() {
             {/* Modal de confirmación */}
             <ConfirmModal
                 isOpen={isConfirmOpen}
-                message="¿Estás seguro de que deseas eliminar esta área?"
+                message="¿Está seguro de que desea eliminar esta área?"
                 onConfirm={confirmDelete}
                 onCancel={() => setIsConfirmOpen(false)}
             />
