@@ -62,9 +62,9 @@ const CreateAreaModal : React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
         try {
             const response = await api.post('/area/post', payload);
             console.log('Respuesta del servidor:', response.data);
-            onConfirm(formData);
+            onConfirm(response.data);
             onClose();
-            navigate('/areas');
+            //navigate('/areas');
         } catch (error) {
             console.error('Error al guardar el área:', error);
             // mensaje de error en el modal

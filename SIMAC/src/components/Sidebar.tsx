@@ -19,7 +19,7 @@ const Sidebar = () => {
     };
 
     const handleConfirmArea = (data: any) => {
-        navigate('/areas', { state: data });
+        navigate('/areas', { state: { refresh: true, payload: data } });
     };
 
     const handleConfirmEquipment = (data: any) => {
