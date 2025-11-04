@@ -5,6 +5,7 @@ import CreateTechnicianModal from './CreateTechnicianModal';
 import EditTechnicianModal from './EditTechnicianModal';
 import ConfirmModal from "../../components/ConfirmModal";
 import api from "../../services/api";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 interface Technician {
@@ -29,6 +30,9 @@ function TechnicianView() {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [technicianToDelete, setTechnicianToDelete] = useState<number | null>(null);
 
+    const location = useLocation();
+    const navigate = useNavigate();
+
     useEffect(() => {
         fetchTechnicians();
     }, []);
@@ -43,6 +47,13 @@ function TechnicianView() {
                 console.error('Error al cargar técnicos:', err);
             });
     };
+
+    useEffect(() => {
+        if (location.state?.refresh) {
+            fetchTechnicians();
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location.state]);
 
     useEffect(() => {
         const filtered = technicians.filter(t =>

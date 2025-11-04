@@ -52,10 +52,10 @@ const CreateTypeChangeModal:React.FC<Props> = ({ isOpen, onClose, onConfirm }) =
         };
 
         try {
-            await api.post('/typeChangeMaintenance', payload);
-            onConfirm(formData);
+            const response = await api.post('/typeChangeMaintenance', payload);
+            onConfirm(response.data);
             onClose();
-            navigate('/type/maintenance');
+            //navigate('/type/maintenance');
         } catch (err) {
             console.error('Error al crear tipo de cambio:', err);
         }

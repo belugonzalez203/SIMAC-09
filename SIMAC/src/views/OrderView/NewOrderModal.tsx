@@ -95,9 +95,9 @@ const NewOrderModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
 
                 await api.put(`/equipment/updateService/${formData.equipo}`, { id_service: 2 });
 
-                onConfirm(formData);
+                onConfirm(response.data);
                 onClose();
-                navigate('/order/received');
+                //navigate('/order/received');
             } catch (error) {
                 console.error('Error al guardar el orden de trabajo:', error);
             }

@@ -15,7 +15,7 @@ const Sidebar = () => {
     const navigate = useNavigate();
 
     const handleConfirmOrder = (data: any) => {
-        navigate('/order/create', { state: data });
+        navigate('/order/create', { state: { refresh: true, payload: data } });
     };
 
     const handleConfirmArea = (data: any) => {
@@ -23,19 +23,19 @@ const Sidebar = () => {
     };
 
     const handleConfirmEquipment = (data: any) => {
-        navigate('/equipos', { state: data });
+        navigate('/equipos', { state: { refresh: true, payload: data } });
     };
 
     const handleConfirmSparePart = (data: any) => {
-        navigate('/repuestos', { state: data });
+        navigate('/repuestos', { state: { refresh: true, payload: data } });
     };
 
     const handleConfirmTechnician = (data: any) => {
-        navigate('/tecnicos', { state: data });
+        navigate('/tecnicos', { state: { refresh: true, payload: data } });
     };
 
     const handleConfirmTypeMaintenance = (data: any) => {
-        navigate('/type/maintenance', { state: data });
+        navigate('/type/maintenance', { state: { refresh: true, payload: data } });
     };
 
     return (

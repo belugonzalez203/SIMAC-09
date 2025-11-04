@@ -68,9 +68,9 @@ const CreateTechnicianModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) 
         try {
             const response = await api.post('/technician/post', payload);
             console.log('Técnico creado:', response.data);
-            onConfirm(formData);
+            onConfirm(response.data);
             onClose();
-            navigate('/tecnicos');
+            //navigate('/tecnicos');
         } catch (error) {
             console.error('Error al guardar el técnico:', error);
         }
