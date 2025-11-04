@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
 import { HiOutlineArrowRightStartOnRectangle } from "react-icons/hi2";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FaTrashAlt } from 'react-icons/fa';
 import styles from '../../styles/ListView.module.css';
 import ConfirmModal from "../../components/ConfirmModal";
 import api from "../../services/api";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 interface Order {
@@ -21,7 +21,6 @@ interface Order {
 }
 
 const ExecutedOrderList: React.FC = () => {
-    const navigate = useNavigate();
     const [orders, setOrders] = useState<Order[]>([]);
     const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
 
@@ -32,6 +31,9 @@ const ExecutedOrderList: React.FC = () => {
 
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [orderToDelete, setOrderToDelete] = useState<number | null>(null);
+
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const handleDeleteClick = (id: number) => {
         setOrderToDelete(id);
@@ -70,6 +72,13 @@ const ExecutedOrderList: React.FC = () => {
             })
             .catch(err => console.error('Error cargando órdenes:', err));
     };
+
+    useEffect(() => {
+        if (location.state?.refresh) {
+            fetchOrders();
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location.state]);
 
     useEffect(() => {
         const filtered = orders.filter(order =>

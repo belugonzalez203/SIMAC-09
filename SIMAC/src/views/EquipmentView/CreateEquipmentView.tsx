@@ -83,9 +83,9 @@ const CreateEquipmentModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) =
         try {
             const response = await api.post('/equipment/post', payload);
             console.log('Respuesta del servidor:', response.data);
-            onConfirm(formData);
+            onConfirm(response.data);
             onClose();
-            navigate('/equipos');
+            //navigate('/equipos');
         } catch (error) {
             console.error('Error al guardar el orden de trabajo:', error);
             // mensaje de error en el modal

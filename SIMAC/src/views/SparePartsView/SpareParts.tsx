@@ -4,6 +4,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import api from "../../services/api";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 interface SparePart {
@@ -27,6 +28,9 @@ function SparePartsView() {
 
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [sparePartToDelete, setSparePartToDelete] = useState<string | null>(null);
+
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const handleEditClick = (sp: SparePart) => {
         setSelectedSparePart(sp);
@@ -87,6 +91,13 @@ function SparePartsView() {
     useEffect(() => {
         fetchSpareParts();
     }, []);
+
+    useEffect(() => {
+        if (location.state?.refresh) {
+            fetchSpareParts();
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location.state]);
 
     useEffect(() => {
         const filtered = spareParts.filter(sp =>

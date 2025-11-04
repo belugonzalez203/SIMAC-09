@@ -4,6 +4,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import api from "../../services/api";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface Equipment {
     id_equip: number;
@@ -46,6 +47,9 @@ function EquipmentListView () {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [equipmentToDelete, setEquipmentToDelete] = useState<number | null>(null);
 
+    const location = useLocation();
+    const navigate = useNavigate();
+
     const fetchEquipments = async () => {
         await api.get('/equipment/')
             .then(response => {
@@ -84,6 +88,13 @@ function EquipmentListView () {
     useEffect(() => {
         fetchEquipments();
     }, []);
+
+    useEffect(() => {
+        if (location.state?.refresh) {
+            fetchEquipments();
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location.state]);
 
     useEffect(() => {
         const filtered = equipments.filter(eq =>

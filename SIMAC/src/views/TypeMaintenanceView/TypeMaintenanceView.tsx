@@ -4,6 +4,7 @@ import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import ConfirmModal from "../../components/ConfirmModal";
 import api from "../../services/api";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface TypeChange {
     id_type_change: number;
@@ -20,6 +21,9 @@ function TypeChangeMaintenanceView() {
 
     const [showConfirm, setShowConfirm] = useState(false);
     const [typeToDelete, setTypeToDelete] = useState<number | null>(null);
+
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const fetchTypes = () => {
         api.get('/typeChangeMaintenance')
@@ -38,6 +42,13 @@ function TypeChangeMaintenanceView() {
     useEffect(() => {
         fetchTypes();
     }, []);
+
+    useEffect(() => {
+        if (location.state?.refresh) {
+            fetchTypes();
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location.state]);
 
     useEffect(() => {
         const filtered = types.filter(t =>

@@ -4,7 +4,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import api from "../../services/api";
-
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface Area {
     id_area: number;
@@ -24,6 +24,9 @@ function AreaView() {
 
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [areaToDelete, setAreaToDelete] = useState<number | null>(null);
+
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const handleDeleteClick = (id: number) => {
         setAreaToDelete(id);
@@ -64,6 +67,13 @@ function AreaView() {
                 console.error('Error fetching areas:', error);
             });
     };
+
+    useEffect(() => {
+        if (location.state?.refresh) {
+            fetchAreas();
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location.state]);
 
     useEffect(() => {
         const filtered = areas.filter(area =>

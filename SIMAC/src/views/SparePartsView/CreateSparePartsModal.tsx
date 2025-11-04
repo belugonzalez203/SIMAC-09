@@ -78,9 +78,9 @@ const CreateSparePartsModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) 
         try {
             const response = await api.post('/sparePart/postWithEquipments', payload);
             console.log('Respuesta del servidor:', response.data);
-            onConfirm(formData);
+            onConfirm(response.data);
             onClose();
-            navigate('/repuestos');
+            //navigate('/repuestos');
         } catch (error) {
             console.error('Error al guardar el repuesto:', error);
         }
