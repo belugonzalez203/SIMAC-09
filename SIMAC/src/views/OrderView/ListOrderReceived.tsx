@@ -1,24 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { HiOutlineArrowRightStartOnRectangle } from "react-icons/hi2";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { FaTrashAlt } from 'react-icons/fa';
+import { FaArrowUpRightFromSquare } from "react-icons/fa6";
+import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import styles from '../../styles/ListView.module.css';
 import ConfirmModal from "../../components/ConfirmModal";
+import EditOrderModal from './EditOrderReceived';
+import { Order } from "../../types/order";
 import api from "../../services/api";
 import { useLocation, useNavigate } from 'react-router-dom';
 
-
-interface Order {
-    id_order: number;
-    code_equip: string;
-    name_equip: string;
-    brand_equip: string;
-    name_area: string;
-    date_delivery: string;
-    code_tech: string;
-    id_tech: string;
-    name_tech: string;
-}
 
 const ExecutedOrderList: React.FC = () => {
     const [orders, setOrders] = useState<Order[]>([]);
@@ -31,6 +20,8 @@ const ExecutedOrderList: React.FC = () => {
 
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [orderToDelete, setOrderToDelete] = useState<number | null>(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -58,6 +49,17 @@ const ExecutedOrderList: React.FC = () => {
                 fetchOrders();
             });
     };
+
+    const handleOpenEdit = (order: Order) => {
+        setSelectedOrder(order);
+        setIsEditModalOpen(true);
+    };
+
+    const handleConfirmEdit = () => {
+        setIsEditModalOpen(false);
+        fetchOrders();
+    };
+
 
     useEffect(() => {
         fetchOrders ();
@@ -135,12 +137,12 @@ const ExecutedOrderList: React.FC = () => {
                     <tr>
                         <th>Orden</th>
                         <th>Equipo</th>
-                        <th>Marca</th>
                         <th>Área</th>
                         <th>Fecha Entrega</th>
                         <th>Técnico</th>
                         <th>Ver más</th>
                         <th>Ejecutar</th>
+                        <th>Editar</th>
                         <th>Eliminar</th>
                     </tr>
                     </thead>
@@ -149,7 +151,6 @@ const ExecutedOrderList: React.FC = () => {
                         <tr key={index}>
                             <td>{order.id_order}</td>
                             <td>{order.code_equip}-{order.name_equip}</td>
-                            <td>{order.brand_equip}</td>
                             <td>{order.name_area}</td>
                             <td>{order.date_delivery}</td>
                             <td>{order.code_tech}-{order.name_tech}</td>
@@ -162,12 +163,17 @@ const ExecutedOrderList: React.FC = () => {
                                 </button>
                             </td>
                             <td className={styles.iconCell}>
-                                <button
-                                    className={styles.buttonLink}
+                                <FaArrowUpRightFromSquare
+                                    className={styles.executeIcon}
                                     onClick={() => navigate(`/order/execute/${order.id_order}`)}
-                                >
-                                    <img src="./execute.png" alt="executeOrder" className={styles.img} />
-                                </button>
+                                    style={{ cursor: 'pointer' }}
+                                />
+                            </td>
+                            <td className={styles.iconCell}>
+                                <FaEdit
+                                    className={styles.editIcon}
+                                    onClick={() => handleOpenEdit(order)}
+                                />
                             </td>
                             <td className={styles.iconCell}>
                                 <FaTrashAlt
@@ -181,6 +187,16 @@ const ExecutedOrderList: React.FC = () => {
                     </tbody>
                 </table>
             </div>
+
+            {selectedOrder && (
+                <EditOrderModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onConfirm={handleConfirmEdit}
+                    order={selectedOrder}
+                />
+            )}
+
             <ConfirmModal
                 isOpen={isConfirmOpen}
                 message="¿Está seguro de que desea eliminar esta órden?"
