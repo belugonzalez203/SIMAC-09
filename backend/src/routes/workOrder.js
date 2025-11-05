@@ -36,15 +36,24 @@ router.get('/pending', (req, res) => {
             t.id_tech                  AS id_tech,
             t.code_tech                AS code_tech,
             t.name_tech                AS name_tech,
+            e.id_equip                 AS id_equip,
             e.code_equip               AS code_equip,
             e.name_equip               AS name_equip,
             e.brand_equip              AS brand_equip,
+            tm.id_type                 AS id_type,
+            tm.name_type               AS name_type,
+            cm.id_class                AS id_class,
+            cm.name_class              AS name_class,
+            wo.priority                AS priority,
             a.name_area                AS name_area,
-            wo.date_delivery           AS date_delivery
+            wo.date_delivery           AS date_delivery,
+            wo.work_requested          AS work_requested
         FROM work_orders wo
         LEFT JOIN technicians t        ON wo.id_tech  = t.id_tech
         LEFT JOIN equipments e         ON e.id_equip  = wo.id_equip
         LEFT JOIN areas a              ON e.id_area   = a.id_area
+        LEFT JOIN type_maintenance tm  ON wo.id_type  = tm.id_type
+        LEFT JOIN class_maintenance cm ON wo.id_class = cm.id_class
         WHERE wo.work_finished = 0
         ORDER BY
             CASE wo.priority
@@ -337,6 +346,86 @@ router.put('/:id', (req, res) => {
             });
         }
     );
+});
+
+router.put('/pending/:id', (req, res) => {
+    const { id } = req.params;
+    const {
+        id_tech,
+        id_equip,
+        id_type,
+        id_class,
+        priority,
+        work_requested,
+        date_delivery
+    } = req.body;
+
+    if (!id) {
+        return res.status(400).json({ error: 'Se requiere el ID de la orden de trabajo.' });
+    }
+
+    // Verifica si la orden existe y no ha sido respondida
+    const checkQuery = `SELECT work_finished FROM work_orders WHERE id_order = ?`;
+
+    db.get(checkQuery, [id], (err, row) => {
+        if (err) {
+            console.error('Error al verificar la orden:', err);
+            return res.status(500).json({ error: 'Error al verificar el estado de la orden.' });
+        }
+
+        if (!row) {
+            return res.status(404).json({ error: 'Orden no encontrada.' });
+        }
+
+        if (row.work_finished === 1) {
+            return res.status(400).json({
+                error: 'No se puede editar la solicitud. La orden ya fue respondida.'
+            });
+        }
+
+        // Actualizar los campos permitidos si la orden sigue pendiente
+        const updateQuery = `
+            UPDATE work_orders
+            SET 
+                id_tech = ?,
+                id_equip = ?,
+                id_type = ?,
+                id_class = ?,
+                priority = ?,
+                work_requested = ?,
+                date_delivery = ?
+            WHERE id_order = ?
+        `;
+
+        db.run(
+            updateQuery,
+            [
+                id_tech,
+                id_equip,
+                id_type,
+                id_class,
+                priority,
+                work_requested,
+                date_delivery,
+                id
+            ],
+            function (updateErr) {
+                if (updateErr) {
+                    console.error('Error al actualizar la solicitud:', updateErr);
+                    return res.status(500).json({ error: 'Error al actualizar la solicitud.' });
+                }
+
+                if (this.changes === 0) {
+                    return res.status(404).json({ error: 'No se actualizó ninguna fila.' });
+                }
+
+                res.json({
+                    message: 'Solicitud de orden de trabajo actualizada correctamente.',
+                    id_order: id
+                });
+            }
+        );
+    });
 });
 
 router.delete('/:id', (req, res) => {
