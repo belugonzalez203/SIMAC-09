@@ -284,6 +284,9 @@ router.put('/:id', (req, res) => {
         return res.status(400).json({ error: 'Datos requeridos inválidos. Se requiere id de la WorkOrder' });
     }
 
+    const now = new Date();
+    const completion_date = now.toISOString().split('T')[0];
+
     const updateWorkOrderQuery = `
         UPDATE work_orders
         SET 
@@ -291,7 +294,8 @@ router.put('/:id', (req, res) => {
             work_performed_details = ?,
             failure_analysis = ?,
             failure_cause = ?,
-            work_finished = 1
+            work_finished = 1,
+            completion_date = ?
         WHERE id_order = ?
     `;
 
@@ -302,6 +306,7 @@ router.put('/:id', (req, res) => {
             work_performed_details || null,
             failure_analysis || null,
             failure_cause || null,
+            completion_date,
             id
         ],
         function (err) {
@@ -328,7 +333,7 @@ router.put('/:id', (req, res) => {
 
                 const id_equip = row.id_equip;
 
-                const updateEquipQuery = `UPDATE equipments SET id_service = 2 WHERE id_equip = ?`;
+                const updateEquipQuery = `UPDATE equipments SET id_service = 1 WHERE id_equip = ?`;
 
                 db.run(updateEquipQuery, [id_equip], function (err3) {
                     if (err3) {

@@ -24,11 +24,15 @@ router.get('/', (req, res) => {
 });
 
 router.post('/post', (req, res) => {
-    const { code_equip, name_equip, number_plate, brand_equip, model_equip, chassis_equip, id_service, id_area } = req.body;
+    let { code_equip, name_equip, number_plate, brand_equip, model_equip, chassis_equip, id_service, id_area } = req.body;
 
     if (!code_equip || !name_equip || !number_plate) {
         return res.status(400).json({ error: 'Datos requeridos inválidos. Se requiere  code_equip, name_equip, number_plate' });
     }
+
+    if (id_service == null || id_service === '') {
+            id_service = 1;
+        }
 
     const query = `INSERT INTO equipments (code_equip, name_equip, number_plate, brand_equip, model_equip, chassis_equip, id_service, id_area) VALUES (?, ?, ?, ?, ?, ?, ?, ? )`;
     db.run(query, [code_equip, name_equip, number_plate, brand_equip, model_equip, chassis_equip, id_service, id_area], function(err) {
@@ -44,8 +48,8 @@ router.put('/:id', (req, res) => {
     const { id } = req.params;
     const { code_equip, name_equip, number_plate, brand_equip, model_equip, chassis_equip, id_service, id_area } = req.body;
 
-    if (!name_equip || !id_service || !id_area) {
-        return res.status(400).json({ error: 'Datos inválidos. Se requiere name_equip, id_service e id_area' });
+    if (!code_equip || !name_equip || !brand_equip || !chassis_equip || !number_plate) {
+        return res.status(400).json({ error: 'Datos inválidos. Se requiere code_equip, name_equip, brand_equip, chassis_equip y number_plate' });
     }
 
     const query = `UPDATE equipments SET code_equip = ?, name_equip = ?, number_plate = ?, brand_equip = ?, model_equip = ?, chassis_equip = ?, id_service = ?, id_area = ? WHERE id_equip = ?`;

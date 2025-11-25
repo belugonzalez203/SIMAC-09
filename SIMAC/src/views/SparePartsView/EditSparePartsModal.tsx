@@ -37,7 +37,21 @@ const EditSparePartsModal: React.FC<Props> = ({ isOpen, onClose, repuesto, onCon
     const [selectedEquips, setSelectedEquips] = useState<EquipOption[]>([]);
 
     useEffect(() => {
-        if (!repuesto) return;
+        if (!isOpen) return;
+
+        setFormData({
+            id_spare_part: '',
+            code_spare_part: '',
+            name_spare_part: '',
+            stock_spare_part: '',
+            equipment_ids: [],
+        });
+
+        setSelectedEquips([]);
+    }, [isOpen, repuesto]);
+
+    useEffect(() => {
+        if (!repuesto || !isOpen) return;
 
         setFormData({
             ...repuesto,
@@ -51,17 +65,33 @@ const EditSparePartsModal: React.FC<Props> = ({ isOpen, onClose, repuesto, onCon
                     label: `${equip.code_equip} - ${equip.name_equip}`,
                 }));
                 setEquipOptions(options);
-
-                // Obtiene asociaciones del repuesto
-                return api.get(`/sparePart/equipments/${repuesto.id_spare_part}`);
             })
+            .catch(err => console.error('Error cargando equipos:', err));
+
+        api.get(`/sparePart/equipments/${repuesto.id_spare_part}`)
             .then(res => {
                 const ids = res.data.equipment_ids as number[];
-                const selected = equipOptions.filter(opt => ids.includes(opt.value));
-                setSelectedEquips(selected);
+                setFormData(prev => ({ ...prev, equipment_ids: ids }));
             })
-            .catch(err => console.error('Error cargando datos:', err));
-    }, [repuesto]);
+            .catch(err => console.error('Error cargando asociaciones:', err));
+
+    }, [repuesto, isOpen]);
+
+    useEffect(() => {
+        if (!equipOptions.length) return;
+
+        if (!formData.equipment_ids || formData.equipment_ids.length === 0) {
+            setSelectedEquips([]);
+            return;
+        }
+
+        const selected = equipOptions.filter(opt =>
+            formData.equipment_ids!.includes(opt.value)
+        );
+
+        setSelectedEquips(selected);
+
+    }, [equipOptions, formData.equipment_ids]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;

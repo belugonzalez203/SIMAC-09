@@ -50,7 +50,6 @@ const ExecuteOrderView: React.FC = () => {
     const [sparePartsOptions, setSparePartsOptions] = useState<SparePartOption[]>([]);
     const [selectedTechnicians, setSelectedTechnicians] = useState<TechnicianOption[]>([]);
     const [selectedSpareParts, setSelectedSpareParts] = useState<SparePartOption[]>([]);
-    const [sparePartDetails, setSparePartDetails] = useState<{ [key: string]: { hour_current: string; hour_change: string } }>({});
 
     useEffect(() => {
         console.log("Spare parts seleccionados:", selectedSpareParts);
@@ -145,8 +144,6 @@ const ExecuteOrderView: React.FC = () => {
                 const sparePartsPayload = selectedSpareParts.map(s => ({
                     id_spare_part: s.value,
                     quantity_used: 1,
-                    hour_current: Number(sparePartDetails[s.value]?.hour_current) || 0,
-                    hour_change: Number(sparePartDetails[s.value]?.hour_change) || 0,
                 }));
 
                 console.log("Repuestos que se van a enviar al backend:", sparePartsPayload);
@@ -250,58 +247,10 @@ const ExecuteOrderView: React.FC = () => {
                                 onChange={(selected) => {
                                     const selectedArray = selected as SparePartOption[];
                                     setSelectedSpareParts(selectedArray);
-
-                                    const updatedDetails = { ...sparePartDetails };
-                                    selectedArray.forEach(sp => {
-                                        if (!updatedDetails[sp.value]) {
-                                            updatedDetails[sp.value] = { hour_current: '', hour_change: '' };
-                                        }
-                                    });
-
-                                    // Elimina repuestos quitados
-                                    Object.keys(updatedDetails).forEach(key => {
-                                        if (!selectedArray.some(sp => sp.value === key)) {
-                                            delete updatedDetails[key];
-                                        }
-                                    });
-
-                                    setSparePartDetails(updatedDetails);
                                 }}
                                 placeholder="Seleccione repuestos utilizados..."
                             />
-                            {selectedSpareParts.map(sp => (
-                                <div key={sp.value} className={styles.sparePartRow}>
-                                    <span>{sp.label}</span>
-                                    <input
-                                        type="number"
-                                        placeholder="Hora actual"
-                                        value={sparePartDetails[sp.value]?.hour_current || ''}
-                                        onChange={(e) =>
-                                            setSparePartDetails(prev => ({
-                                                ...prev,
-                                                [sp.value]: {
-                                                    ...prev[sp.value],
-                                                    hour_current: e.target.value
-                                                }
-                                            }))
-                                        }
-                                    />
-                                    <input
-                                        type="number"
-                                        placeholder="Hora cambio"
-                                        value={sparePartDetails[sp.value]?.hour_change || ''}
-                                        onChange={(e) =>
-                                            setSparePartDetails(prev => ({
-                                                ...prev,
-                                                [sp.value]: {
-                                                    ...prev[sp.value],
-                                                    hour_change: e.target.value
-                                                }
-                                            }))
-                                        }
-                                    />
-                                </div>
-                            ))}
+                        
 
                         </div>
 
